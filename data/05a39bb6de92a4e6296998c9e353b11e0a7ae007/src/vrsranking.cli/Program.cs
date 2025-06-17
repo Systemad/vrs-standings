@@ -33,7 +33,7 @@ if (await repository.GetCommitAsync(
 }
 */
 
-await vrsranking.cli.Program.RunOp("C:\\Users\\yeahg\\source\\repos\\vrsranking");
+
 static async ValueTask WhenAll(IEnumerable<ValueTask> tasks)
 {
     foreach (var task in tasks.ToArray())
@@ -168,5 +168,3 @@ static async Task ExportAsync(
     var f = TimeSpan.FromTicks((long)(e.Ticks * fr));
     tw.WriteLine($"Files: {files}, {f}");
 }
-
-//await ExportAsync(Console.Out, "C:\\Users\\yeahg\\source\\repos\\vrsranking", "05a39bb6de92a4e6296998c9e353b11e0a7ae007", "C:\\Users\\yeahg\\source\\repos\\vrsranking\\data\\05a39bb6de92a4e6296998c9e353b11e0a7ae007");
