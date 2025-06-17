@@ -208,6 +208,7 @@ public static class Program
         // If you want to match the standard format used in Git, you can use these methods.
         tw.WriteLine($"Author: {commit.Author.ToGitAuthorString()}");
         tw.WriteLine($"Date:   {commit.Author.Date.ToGitDateString()}");
+        tw.WriteLine($"Body:   {commit.Body}");
 
         tw.WriteLine();
 
