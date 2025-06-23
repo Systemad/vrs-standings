@@ -2,12 +2,15 @@
 using Spectre.Console.Cli;
 using vrsranking.cli;
 using vrsranking.cli.Commands;
+using vrsranking.lib;
+using vrsranking.lib.GitLog;
 using vrsranking.lib.GitRepo;
-
 
 var services = new ServiceCollection();
 
 services.AddSingleton<IGitRepoService, GitRepoService>();
+services.AddSingleton<IGitLogService, GitLogService>();
+services.AddSingleton<IRankingService, RankingService>();
 
 var app = new CommandApp(new MyTypeRegistrar(services));
 
@@ -15,6 +18,8 @@ app.Configure(config =>
 {
     config.AddCommand<InitCommand>("init")
         .WithExample("--init", "--name", "ValveSoftware/counter-strike_regional_standings");
+
+    config.AddCommand<ExportCommand>("export");
 });
 await app.RunAsync(args);
 

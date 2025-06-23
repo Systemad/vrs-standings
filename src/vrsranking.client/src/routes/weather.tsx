@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
-import "../App.css";
-
 export const Route = createFileRoute("/weather")({
     component: Weather,
 });

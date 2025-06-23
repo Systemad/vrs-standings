@@ -152,7 +152,8 @@ public class GitRepoService : IGitRepoService
     
     public async Task InitRepoAsync(string name, bool overwrite = false)
     {
-        var targetDir = "C:\\Users\\yeahg\\source\\repos\\vrsranking\\repo";
+        var targetDir = Paths.ReposRoot;
+        
         Directory.CreateDirectory(targetDir);
         
         

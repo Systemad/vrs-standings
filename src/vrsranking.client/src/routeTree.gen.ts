@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WeatherRouteImport } from './routes/weather'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as TeamsTeamIdRouteImport } from './routes/teams/$teamId'
 
 const WeatherRoute = WeatherRouteImport.update({
   id: '/weather',
   path: '/weather',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeamsTeamIdRoute = TeamsTeamIdRouteImport.update({
@@ -24,27 +30,31 @@ const TeamsTeamIdRoute = TeamsTeamIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/weather': typeof WeatherRoute
   '/teams/$teamId': typeof TeamsTeamIdRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/weather': typeof WeatherRoute
   '/teams/$teamId': typeof TeamsTeamIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/weather': typeof WeatherRoute
   '/teams/$teamId': typeof TeamsTeamIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/weather' | '/teams/$teamId'
+  fullPaths: '/' | '/weather' | '/teams/$teamId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/weather' | '/teams/$teamId'
-  id: '__root__' | '/weather' | '/teams/$teamId'
+  to: '/' | '/weather' | '/teams/$teamId'
+  id: '__root__' | '/' | '/weather' | '/teams/$teamId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   WeatherRoute: typeof WeatherRoute
   TeamsTeamIdRoute: typeof TeamsTeamIdRoute
 }
@@ -58,6 +68,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WeatherRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/teams/$teamId': {
       id: '/teams/$teamId'
       path: '/teams/$teamId'
@@ -69,6 +86,7 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   WeatherRoute: WeatherRoute,
   TeamsTeamIdRoute: TeamsTeamIdRoute,
 }

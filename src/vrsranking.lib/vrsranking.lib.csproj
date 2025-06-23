@@ -8,5 +8,11 @@
 
     <ItemGroup>
         <PackageReference Include="GitReader" Version="1.11.0" />
+        <PackageReference Include="Markdig" Version="0.41.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Endpoins\" />
+      <Folder Include="Features\Rankings\Helpers\" />
     </ItemGroup>
 </Project>

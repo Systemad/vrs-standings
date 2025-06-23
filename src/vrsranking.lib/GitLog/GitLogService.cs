@@ -6,7 +6,7 @@ namespace vrsranking.lib.GitLog;
 
 public interface IGitLogService
 {
-    public Task<SortedCommitMap> WriteLogAsync(
+    public Task<HashSet<Commit>> WriteLogAsync(
         TextWriter tw,
         string repositoryPath);
 }
@@ -118,7 +118,7 @@ public class GitLogService : IGitLogService
     }
 
     // Dump the entire contents of the specified local repository in `git log` format.
-    public async Task<SortedCommitMap> WriteLogAsync(
+    public async Task<HashSet<Commit>> WriteLogAsync(
         TextWriter tw,
         string repositoryPath)
     {
@@ -189,7 +189,6 @@ public class GitLogService : IGitLogService
                 }
             }
         }
-
-        return sortedCommits;
+        return hashedCommits;
     }
 }

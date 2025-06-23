@@ -1,12 +1,17 @@
 import { fileURLToPath, URL } from "node:url";
 
 import { defineConfig } from "vite";
+import type { Plugin } from "vite";
 import plugin from "@vitejs/plugin-react";
 import fs from "fs";
 import path from "path";
 import child_process from "child_process";
 import { env } from "process";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+
+import { defaultConfig, getColorModeScript } from "@yamada-ui/react";
+
 const baseFolder =
     env.APPDATA !== undefined && env.APPDATA !== ""
         ? `${env.APPDATA}/ASP.NET/https`
@@ -44,8 +49,21 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 const target = env.ASPNETCORE_HTTPS_PORT
     ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}`
     : env.ASPNETCORE_URLS
-    ? env.ASPNETCORE_URLS.split(";")[0]
-    : "https://localhost:7214";
+      ? env.ASPNETCORE_URLS.split(";")[0]
+      : "https://localhost:7214";
+
+function injectScript(): Plugin {
+    return {
+        name: "vite-plugin-inject-scripts",
+        transformIndexHtml(html, _) {
+            const content = getColorModeScript({
+                initialColorMode: defaultConfig.initialColorMode,
+            });
+
+            return html.replace("<body>", `<body><script>${content}</script>`);
+        },
+    };
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -59,6 +77,8 @@ export default defineConfig({
             quoteStyle: "single",
         }),
         plugin(),
+        tsconfigPaths(),
+        injectScript(),
     ],
     resolve: {
         alias: {
@@ -70,6 +90,11 @@ export default defineConfig({
             "^/weatherforecast": {
                 target,
                 secure: false,
+            },
+            "^/api/standings(/|$)": {
+                target,
+                secure: false,
+                changeOrigin: false,
             },
         },
         port: parseInt(env.DEV_SERVER_PORT || "52032"),

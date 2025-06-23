@@ -9,7 +9,6 @@ export const Route = createRootRouteWithContext<{
     component: RootComponent,
 });
 function RootComponent() {
-    //const [opened, { toggle }] = useDisclosure();
     return (
         <div>
             <Outlet />

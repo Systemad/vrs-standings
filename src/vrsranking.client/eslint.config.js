@@ -6,14 +6,19 @@ import tseslint from "typescript-eslint";
 import pluginQuery from "@tanstack/eslint-plugin-query";
 import prettierConfig from "eslint-config-prettier";
 import pluginRouter from "@tanstack/eslint-plugin-router";
-import globalIgnores from "eslint/config";
 
 export default tseslint.config(
     prettierConfig,
     ...pluginRouter.configs["flat/recommended"],
     ...pluginQuery.configs["flat/recommended"],
-    globalIgnores(["**/routeTree.gen.ts"]),
-    { ignores: ["dist"] },
+    {
+        ignores: [
+            "dist",
+            "**/routeTree.gen.ts",
+            "**/routeTree.gen.ts",
+            "api/**",
+        ],
+    },
     {
         extends: [js.configs.recommended, ...tseslint.configs.recommended],
         files: ["**/*.{ts,tsx}"],
