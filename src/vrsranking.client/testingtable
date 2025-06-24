@@ -1,0 +1,222 @@
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import {
+    Trophy,
+    Crown,
+    ArrowUpDown,
+    ChevronUp,
+    ChevronDown,
+} from "lucide-react";
+import {
+    createColumnHelper,
+    flexRender,
+    getCoreRowModel,
+    getSortedRowModel,
+    useReactTable,
+} from "@tanstack/react-table";
+
+const data = [
+    {
+        id: 1,
+        position: 1,
+        roster: ["APEX", "FLAMEZ", "MEZII", "ROPZ", "ZYWOO"],
+        points: 1000,
+        trend: "+2",
+        winRate: 85,
+    },
+    // ... add more teams
+];
+
+const columnHelper = createColumnHelper();
+
+export default function RankingsTable() {
+    const [sorting, setSorting] = useState([]);
+    const [expanded, setExpanded] = useState({});
+
+    const columns = [
+        columnHelper.accessor("position", {
+            header: "Rank",
+            cell: (info) => (
+                <div className="flex items-center gap-3">
+                    {info.getValue() === 1 ? (
+                        <Crown className="w-5 h-5 text-yellow-500" />
+                    ) : info.getValue() <= 3 ? (
+                        <Trophy className="w-5 h-5 text-blue-500" />
+                    ) : (
+                        <span className="w-5 h-5 flex items-center justify-center text-gray-400">
+                            {info.getValue()}
+                        </span>
+                    )}
+                </div>
+            ),
+        }),
+        columnHelper.accessor("roster", {
+            header: "Team",
+            cell: (info) => (
+                <div className="flex flex-col">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-gray-700/50 flex items-center justify-center">
+                            <span className="text-xs text-gray-300">Team</span>
+                        </div>
+                        <span className="font-semibold text-white">
+                            Team {info.row.original.position}
+                        </span>
+                    </div>
+                    {expanded[info.row.original.id] && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="mt-2 flex flex-wrap gap-2"
+                        >
+                            {info.getValue().map((player) => (
+                                <span
+                                    key={player}
+                                    className="px-3 py-1 text-sm bg-gray-700/50 rounded-full text-gray-200"
+                                >
+                                    {player}
+                                </span>
+                            ))}
+                        </motion.div>
+                    )}
+                </div>
+            ),
+        }),
+        columnHelper.accessor("points", {
+            header: (info) => (
+                <div className="flex items-center gap-2">
+                    Points
+                    <ArrowUpDown className="w-4 h-4" />
+                </div>
+            ),
+            cell: (info) => (
+                <div className="font-semibold text-white">
+                    {info.getValue()}
+                </div>
+            ),
+        }),
+        columnHelper.accessor("winRate", {
+            header: "Win Rate",
+            cell: (info) => (
+                <div className="w-32 flex items-center gap-3">
+                    <div className="flex-1 h-2 rounded-full bg-gray-700 overflow-hidden">
+                        <div
+                            className="h-full bg-gradient-to-r from-blue-500 to-blue-400"
+                            style={{ width: `${info.getValue()}%` }}
+                        />
+                    </div>
+                    <span className="text-sm text-gray-300">
+                        {info.getValue()}%
+                    </span>
+                </div>
+            ),
+        }),
+        columnHelper.accessor("trend", {
+            header: "Trend",
+            cell: (info) => (
+                <span
+                    className={`font-medium ${
+                        info.getValue().startsWith("+")
+                            ? "text-green-500"
+                            : "text-red-500"
+                    }`}
+                >
+                    {info.getValue()}
+                </span>
+            ),
+        }),
+        columnHelper.display({
+            id: "expand",
+            cell: (info) => (
+                <button
+                    onClick={() => {
+                        setExpanded((prev) => ({
+                            ...prev,
+                            [info.row.original.id]: !prev[info.row.original.id],
+                        }));
+                    }}
+                    className="p-2 hover:bg-gray-700/50 rounded-full transition-colors"
+                >
+                    {expanded[info.row.original.id] ? (
+                        <ChevronUp className="w-4 h-4 text-gray-400" />
+                    ) : (
+                        <ChevronDown className="w-4 h-4 text-gray-400" />
+                    )}
+                </button>
+            ),
+        }),
+    ];
+
+    const table = useReactTable({
+        data,
+        columns,
+        state: {
+            sorting,
+        },
+        onSortingChange: setSorting,
+        getSortedRowModel: getSortedRowModel(),
+        getCoreRowModel: getCoreRowModel(),
+    });
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 p-4 md:p-8">
+            <div className="max-w-7xl mx-auto">
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                        Counter-Strike Rankings
+                    </h1>
+                    <div className="flex justify-center gap-4">
+                        <span className="px-4 py-2 bg-blue-500/20 rounded-full text-blue-400">
+                            Season 2025
+                        </span>
+                    </div>
+                </div>
+
+                <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden">
+                    <table className="w-full">
+                        <thead>
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <tr key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => (
+                                        <th
+                                            key={header.id}
+                                            className="px-6 py-4 text-left text-sm font-semibold text-gray-300 border-b border-gray-700"
+                                            onClick={header.column.getToggleSortingHandler()}
+                                        >
+                                            {flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext()
+                                            )}
+                                        </th>
+                                    ))}
+                                </tr>
+                            ))}
+                        </thead>
+                        <tbody>
+                            {table.getRowModel().rows.map((row) => (
+                                <motion.tr
+                                    key={row.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="hover:bg-gray-700/30 transition-colors"
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <td
+                                            key={cell.id}
+                                            className="px-6 py-4 border-b border-gray-700/50"
+                                        >
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
+                                        </td>
+                                    ))}
+                                </motion.tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+}

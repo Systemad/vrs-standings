@@ -8,9 +8,11 @@
         "build": "tsc -b && vite build",
         "lint": "eslint .",
         "preview": "vite preview",
-        "generate": "kubb generate"
+        "generate": "kubb generate",
+        "theme": "pnpm yamada-cli theme ./src/theme/theme.ts"
     },
     "dependencies": {
+        "@phosphor-icons/react": "^2.1.10",
         "@tanstack/react-query": "^5.81.2",
         "@tanstack/react-query-devtools": "^5.81.2",
         "@tanstack/react-router": "^1.121.34",
@@ -38,6 +40,7 @@
         "@types/react": "^19.1.8",
         "@types/react-dom": "^19.1.6",
         "@vitejs/plugin-react": "^4.6.0",
+        "@yamada-ui/cli": "^1.2.4",
         "eslint": "^9.29.0",
         "eslint-config-prettier": "^10.1.5",
         "eslint-plugin-react-hooks": "^5.2.0",
