@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"required":["key","filename"],"properties":{"key":{"type":"string"},"filename":{"type":"string"}},"x-readme-ref-name":"Details"}

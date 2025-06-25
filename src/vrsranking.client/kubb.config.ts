@@ -6,9 +6,7 @@ export default defineConfig(() => {
     return {
         root: ".",
         input: {
-            //path: "openapi.json",
             path: "http://localhost:5222/openapi/v1.json",
-            //path: "../Ludus.Server/Schema/Ludus.Server.json",
         },
         output: {
             path: "./src/api",

@@ -1,17 +1,35 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Container, Box, Image, HStack, Text, Badge } from "@yamada-ui/react";
-import { PagingTable, type Column } from "@yamada-ui/table";
-import { useMemo, useState } from "react";
 import {
+    ArrowRightIcon,
+    GameControllerIcon,
+    GlobeIcon,
+    RabbitIcon,
+} from "@phosphor-icons/react";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+    Container,
+    Box,
+    Image,
+    HStack,
+    Text,
+    Badge,
+    Motion,
+    RadioCardGroup,
+    RadioCard,
+    RadioCardLabel,
+} from "@yamada-ui/react";
+import { PagingTable, type Column } from "@yamada-ui/table";
+import { useEffect, useMemo, useState } from "react";
+import {
+    useStandingsGetAvailableStandingsEndpoints,
     useStandingsGetStandingsEndpoint,
-    type FeaturesRankingsModelsTeamStanding,
+    type TeamStanding,
 } from "~/api";
 export const Route = createFileRoute("/")({
     component: Index,
 });
 
 function Index() {
-    const columns = useMemo<Column<FeaturesRankingsModelsTeamStanding>[]>(
+    const columns = useMemo<Column<TeamStanding>[]>(
         () => [
             {
                 header: "Position",
@@ -70,31 +88,86 @@ function Index() {
         []
     );
 
-    const [region, setRegion] = useState<string>("global");
+    const [region, setRegion] = useState<string>("Global");
+    const [date, setDate] = useState<string>("");
+
+    const {
+        data: availableStandingsData,
+        error: availableStandingsError,
+        isPending: availableStandingsPending,
+    } = useStandingsGetAvailableStandingsEndpoints();
+
+    useEffect(() => {
+        if (availableStandingsData?.data.regionWithDates?.length) {
+            const defaultRegion =
+                availableStandingsData.data.regionWithDates.find(
+                    (r) =>
+                        r.region.toLocaleLowerCase() ===
+                        region.toLocaleLowerCase()
+                );
+
+            if (defaultRegion && defaultRegion.dates.length > 0) {
+                setDate(defaultRegion.dates[0]!);
+            }
+        }
+    }, [region, availableStandingsData?.data]);
 
     const { data, error, isPending } = useStandingsGetStandingsEndpoint(
         region,
-        "2025_06_02"
+        date,
+        {
+            query: {
+                enabled: !!date,
+            },
+        }
     );
 
     if (isPending) return "Loading...";
 
     if (error) return "An error has occurred: " + error.message;
 
-    /*
-            bgGradient={[
-                "linear(to-br, gray.700, blue.700)",
-                "linear(to-br, blue.700, gray.700)",
-            ]}
-
-                bg="transparentize(gray.800, 50%)"
-    */
     return (
         <Container
             rounded="2xl"
             variant="surface"
             bg={["blackAlpha.50", "whiteAlpha.100"]}
         >
+            <RadioCardGroup w="fit-content" withIcon={false}>
+                <RadioCard value="Global" rounded="xl">
+                    <RadioCardLabel>
+                        <HStack gap="sm">
+                            <RabbitIcon color="muted" fontSize="2xl" />
+                            <Text>Global</Text>
+                        </HStack>
+                    </RadioCardLabel>
+                </RadioCard>
+
+                <RadioCard value="Europe" rounded="xl">
+                    <HStack gap="sm">
+                        <GlobeIcon color="muted" fontSize="2xl" />
+                        <Text>Europe</Text>
+                    </HStack>
+                </RadioCard>
+
+                <RadioCard value="Americas" rounded="xl">
+                    <RadioCardLabel>
+                        <HStack gap="sm">
+                            <GameControllerIcon color="muted" fontSize="2xl" />
+                            <Text>Americas</Text>
+                        </HStack>
+                    </RadioCardLabel>
+                </RadioCard>
+
+                <RadioCard value="Asia" rounded="xl">
+                    <RadioCardLabel>
+                        <HStack gap="sm">
+                            <GameControllerIcon color="muted" fontSize="2xl" />
+                            <Text>Asia</Text>
+                        </HStack>
+                    </RadioCardLabel>
+                </RadioCard>
+            </RadioCardGroup>
+
             <PagingTable
                 whiteSpace={{ base: "inherit", lg: "nowrap" }}
                 colorScheme="emerald"
@@ -106,6 +179,7 @@ function Index() {
                 }}
                 rowProps={{
                     _hover: { bg: "whiteAlpha.100" },
+
                     borderBottom: "none",
                 }}
                 cellProps={{
@@ -125,3 +199,13 @@ function Index() {
         </Container>
     );
 }
+
+/*
+
+            bgGradient={[
+                "linear(to-br, gray.700, blue.700)",
+                "linear(to-br, blue.700, gray.700)",
+            ]}
+
+                bg="transparentize(gray.800, 50%)"
+*/

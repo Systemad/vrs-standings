@@ -3,9 +3,9 @@
  * Do not edit manually.
  */
 
-import type { VrsrankingServerWeatherForecast } from './VrsrankingServerWeatherForecast.ts'
+import type { WeatherForecast } from './WeatherForecast.ts'
 
-export type WeatherForecastGet200 = VrsrankingServerWeatherForecast[]
+export type WeatherForecastGet200 = WeatherForecast[]
 
 export type WeatherForecastGetQueryResponse = WeatherForecastGet200
 

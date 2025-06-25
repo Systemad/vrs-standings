@@ -6,63 +6,51 @@
 import client from '@kubb/plugin-client/clients/axios'
 import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
 import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from '@tanstack/react-query'
-import type {
-  StandingsGetAvailableStandingsEndpointsQueryResponse,
-  StandingsGetAvailableStandingsEndpointsPathParams,
-} from '../../types/StandingsGetAvailableStandingsEndpoints.ts'
+import type { StandingsGetAvailableStandingsEndpointsQueryResponse } from '../../types/StandingsGetAvailableStandingsEndpoints.ts'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 
-export const standingsGetAvailableStandingsEndpointsQueryKey = (region: StandingsGetAvailableStandingsEndpointsPathParams['region']) =>
-  [{ url: '/api/standings/available/:region', params: { region: region } }] as const
+export const standingsGetAvailableStandingsEndpointsQueryKey = () => [{ url: '/api/standings/available' }] as const
 
 export type StandingsGetAvailableStandingsEndpointsQueryKey = ReturnType<typeof standingsGetAvailableStandingsEndpointsQueryKey>
 
 /**
- * {@link /api/standings/available/:region}
+ * {@link /api/standings/available}
  */
-export async function standingsGetAvailableStandingsEndpoints(
-  region: StandingsGetAvailableStandingsEndpointsPathParams['region'],
-  config: Partial<RequestConfig> & { client?: typeof client } = {},
-) {
+export async function standingsGetAvailableStandingsEndpoints(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
   const { client: request = client, ...requestConfig } = config
 
   const res = await request<StandingsGetAvailableStandingsEndpointsQueryResponse, ResponseErrorConfig<Error>, unknown>({
     method: 'GET',
-    url: `/api/standings/available/${region}`,
+    url: `/api/standings/available`,
     ...requestConfig,
   })
   return res
 }
 
-export function standingsGetAvailableStandingsEndpointsQueryOptions(
-  region: StandingsGetAvailableStandingsEndpointsPathParams['region'],
-  config: Partial<RequestConfig> & { client?: typeof client } = {},
-) {
-  const queryKey = standingsGetAvailableStandingsEndpointsQueryKey(region)
+export function standingsGetAvailableStandingsEndpointsQueryOptions(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
+  const queryKey = standingsGetAvailableStandingsEndpointsQueryKey()
   return queryOptions<
     ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
     ResponseErrorConfig<Error>,
     ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
     typeof queryKey
   >({
-    enabled: !!region,
     queryKey,
     queryFn: async ({ signal }) => {
       config.signal = signal
-      return standingsGetAvailableStandingsEndpoints(region, config)
+      return standingsGetAvailableStandingsEndpoints(config)
     },
   })
 }
 
 /**
- * {@link /api/standings/available/:region}
+ * {@link /api/standings/available}
  */
 export function useStandingsGetAvailableStandingsEndpoints<
   TData = ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
   TQueryData = ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
   TQueryKey extends QueryKey = StandingsGetAvailableStandingsEndpointsQueryKey,
 >(
-  region: StandingsGetAvailableStandingsEndpointsPathParams['region'],
   options: {
     query?: Partial<
       QueryObserverOptions<ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>
@@ -71,11 +59,11 @@ export function useStandingsGetAvailableStandingsEndpoints<
   } = {},
 ) {
   const { query: { client: queryClient, ...queryOptions } = {}, client: config = {} } = options ?? {}
-  const queryKey = queryOptions?.queryKey ?? standingsGetAvailableStandingsEndpointsQueryKey(region)
+  const queryKey = queryOptions?.queryKey ?? standingsGetAvailableStandingsEndpointsQueryKey()
 
   const query = useQuery(
     {
-      ...(standingsGetAvailableStandingsEndpointsQueryOptions(region, config) as unknown as QueryObserverOptions),
+      ...(standingsGetAvailableStandingsEndpointsQueryOptions(config) as unknown as QueryObserverOptions),
       queryKey,
       ...(queryOptions as unknown as Omit<QueryObserverOptions, 'queryKey'>),
     },

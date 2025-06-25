@@ -4,7 +4,6 @@ using vrsranking.lib;
 
 namespace Standings.GetStandings;
 
-
 public class Endpoint : Endpoint<GetStandingsRequest, GetStandingsResponse>
 {
     public override void Configure()

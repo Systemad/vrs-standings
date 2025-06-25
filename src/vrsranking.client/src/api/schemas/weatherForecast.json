@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"required":["date","temperatureC","temperatureF"],"properties":{"date":{"type":"string","format":"date"},"temperatureC":{"type":"integer","format":"int32"},"temperatureF":{"type":"integer","format":"int32"},"summary":{"type":"string","nullable":true}},"x-readme-ref-name":"WeatherForecast"}

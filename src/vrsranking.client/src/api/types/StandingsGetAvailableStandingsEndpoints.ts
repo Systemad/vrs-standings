@@ -3,24 +3,16 @@
  * Do not edit manually.
  */
 
-import type { StandingsGetAvailableStandingsGetAvailableStandingsResponse } from './StandingsGetAvailableStandingsGetAvailableStandingsResponse.ts'
-
-export type StandingsGetAvailableStandingsEndpointsPathParams = {
-  /**
-   * @type string
-   */
-  region: string
-}
+import type { GetAvailableStandingsResponse } from './GetAvailableStandingsResponse.ts'
 
 /**
  * @description Success
  */
-export type StandingsGetAvailableStandingsEndpoints200 = StandingsGetAvailableStandingsGetAvailableStandingsResponse
+export type StandingsGetAvailableStandingsEndpoints200 = GetAvailableStandingsResponse
 
 export type StandingsGetAvailableStandingsEndpointsQueryResponse = StandingsGetAvailableStandingsEndpoints200
 
 export type StandingsGetAvailableStandingsEndpointsQuery = {
   Response: StandingsGetAvailableStandingsEndpoints200
-  PathParams: StandingsGetAvailableStandingsEndpointsPathParams
   Errors: any
 }

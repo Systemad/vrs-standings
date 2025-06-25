@@ -3,4 +3,4 @@
  * Do not edit manually.
  */
 
-export type StandingsGetStandingsGetStandingsRequest = object
+export type GetStandingsRequest = object

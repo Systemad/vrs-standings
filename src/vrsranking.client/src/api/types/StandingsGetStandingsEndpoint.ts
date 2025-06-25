@@ -3,7 +3,7 @@
  * Do not edit manually.
  */
 
-import type { StandingsGetStandingsGetStandingsResponse } from './StandingsGetStandingsGetStandingsResponse.ts'
+import type { GetStandingsResponse } from './GetStandingsResponse.ts'
 
 export type StandingsGetStandingsEndpointPathParams = {
   /**
@@ -19,7 +19,7 @@ export type StandingsGetStandingsEndpointPathParams = {
 /**
  * @description Success
  */
-export type StandingsGetStandingsEndpoint200 = StandingsGetStandingsGetStandingsResponse
+export type StandingsGetStandingsEndpoint200 = GetStandingsResponse
 
 export type StandingsGetStandingsEndpointQueryResponse = StandingsGetStandingsEndpoint200
 

@@ -3,12 +3,12 @@
  * Do not edit manually.
  */
 
-import type { StandingsGetRegionsGetRegionsResponse } from './StandingsGetRegionsGetRegionsResponse.ts'
+import type { GetRegionsResponse } from './GetRegionsResponse.ts'
 
 /**
  * @description Success
  */
-export type StandingsGetRegionsEndpoint200 = StandingsGetRegionsGetRegionsResponse
+export type StandingsGetRegionsEndpoint200 = GetRegionsResponse
 
 export type StandingsGetRegionsEndpointQueryResponse = StandingsGetRegionsEndpoint200
 

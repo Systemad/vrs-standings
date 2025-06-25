@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"required":["region","dates"],"properties":{"region":{"type":"string"},"dates":{"type":"array","items":{"type":"string"}}},"x-readme-ref-name":"AvailableRegionsWithDates"}

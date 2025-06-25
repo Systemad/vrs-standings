@@ -6,7 +6,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddFastEndpoints().SwaggerDocument();
+builder.Services.AddFastEndpoints().SwaggerDocument(options =>
+{
+    options.DocumentSettings = s =>
+    {
+        s.Title = "VRSRANKING.API";
+        s.Version = "v1";
+        s.MarkNonNullablePropsAsRequired();
+    };
+    options.ShortSchemaNames = true;
+
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

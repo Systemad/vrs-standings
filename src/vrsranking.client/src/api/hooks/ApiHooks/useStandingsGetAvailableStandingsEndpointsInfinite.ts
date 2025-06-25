@@ -6,50 +6,39 @@
 import client from '@kubb/plugin-client/clients/axios'
 import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
 import type { InfiniteData, QueryKey, QueryClient, InfiniteQueryObserverOptions, UseInfiniteQueryResult } from '@tanstack/react-query'
-import type {
-  StandingsGetAvailableStandingsEndpointsQueryResponse,
-  StandingsGetAvailableStandingsEndpointsPathParams,
-} from '../../types/StandingsGetAvailableStandingsEndpoints.ts'
+import type { StandingsGetAvailableStandingsEndpointsQueryResponse } from '../../types/StandingsGetAvailableStandingsEndpoints.ts'
 import { infiniteQueryOptions, useInfiniteQuery } from '@tanstack/react-query'
 
-export const standingsGetAvailableStandingsEndpointsInfiniteQueryKey = (region: StandingsGetAvailableStandingsEndpointsPathParams['region']) =>
-  [{ url: '/api/standings/available/:region', params: { region: region } }] as const
+export const standingsGetAvailableStandingsEndpointsInfiniteQueryKey = () => [{ url: '/api/standings/available' }] as const
 
 export type StandingsGetAvailableStandingsEndpointsInfiniteQueryKey = ReturnType<typeof standingsGetAvailableStandingsEndpointsInfiniteQueryKey>
 
 /**
- * {@link /api/standings/available/:region}
+ * {@link /api/standings/available}
  */
-export async function standingsGetAvailableStandingsEndpointsInfinite(
-  region: StandingsGetAvailableStandingsEndpointsPathParams['region'],
-  config: Partial<RequestConfig> & { client?: typeof client } = {},
-) {
+export async function standingsGetAvailableStandingsEndpointsInfinite(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
   const { client: request = client, ...requestConfig } = config
 
   const res = await request<StandingsGetAvailableStandingsEndpointsQueryResponse, ResponseErrorConfig<Error>, unknown>({
     method: 'GET',
-    url: `/api/standings/available/${region}`,
+    url: `/api/standings/available`,
     ...requestConfig,
   })
   return res
 }
 
-export function standingsGetAvailableStandingsEndpointsInfiniteQueryOptions(
-  region: StandingsGetAvailableStandingsEndpointsPathParams['region'],
-  config: Partial<RequestConfig> & { client?: typeof client } = {},
-) {
-  const queryKey = standingsGetAvailableStandingsEndpointsInfiniteQueryKey(region)
+export function standingsGetAvailableStandingsEndpointsInfiniteQueryOptions(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
+  const queryKey = standingsGetAvailableStandingsEndpointsInfiniteQueryKey()
   return infiniteQueryOptions<
     ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
     ResponseErrorConfig<Error>,
     ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
     typeof queryKey
   >({
-    enabled: !!region,
     queryKey,
     queryFn: async ({ signal }) => {
       config.signal = signal
-      return standingsGetAvailableStandingsEndpointsInfinite(region, config)
+      return standingsGetAvailableStandingsEndpointsInfinite(config)
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage['pageNumber'],
@@ -58,14 +47,13 @@ export function standingsGetAvailableStandingsEndpointsInfiniteQueryOptions(
 }
 
 /**
- * {@link /api/standings/available/:region}
+ * {@link /api/standings/available}
  */
 export function useStandingsGetAvailableStandingsEndpointsInfinite<
   TData = InfiniteData<ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>>,
   TQueryData = ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
   TQueryKey extends QueryKey = StandingsGetAvailableStandingsEndpointsInfiniteQueryKey,
 >(
-  region: StandingsGetAvailableStandingsEndpointsPathParams['region'],
   options: {
     query?: Partial<
       InfiniteQueryObserverOptions<ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryKey>
@@ -74,11 +62,11 @@ export function useStandingsGetAvailableStandingsEndpointsInfinite<
   } = {},
 ) {
   const { query: { client: queryClient, ...queryOptions } = {}, client: config = {} } = options ?? {}
-  const queryKey = queryOptions?.queryKey ?? standingsGetAvailableStandingsEndpointsInfiniteQueryKey(region)
+  const queryKey = queryOptions?.queryKey ?? standingsGetAvailableStandingsEndpointsInfiniteQueryKey()
 
   const query = useInfiniteQuery(
     {
-      ...(standingsGetAvailableStandingsEndpointsInfiniteQueryOptions(region, config) as unknown as InfiniteQueryObserverOptions),
+      ...(standingsGetAvailableStandingsEndpointsInfiniteQueryOptions(config) as unknown as InfiniteQueryObserverOptions),
       queryKey,
       ...(queryOptions as unknown as Omit<InfiniteQueryObserverOptions, 'queryKey'>),
     },

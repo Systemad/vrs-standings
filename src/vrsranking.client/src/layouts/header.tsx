@@ -1,6 +1,5 @@
 import type {
     CenterProps,
-    ColorMode,
     DrawerProps,
     IconButtonProps,
     MenuProps,
@@ -21,10 +20,6 @@ import {
     IconButton,
     Image,
     Menu,
-    MenuButton,
-    MenuList,
-    MenuOptionGroup,
-    MenuOptionItem,
     mergeRefs,
     Spacer,
     useBreakpoint,
@@ -196,8 +191,7 @@ interface ColorModeButtonProps extends IconButtonProps {
 const ColorModeButton: FC<ColorModeButtonProps> = memo(
     ({ menuProps, ...rest }) => {
         const padding = useBreakpointValue({ base: 32, md: 16 });
-        const { changeColorMode, colorMode, internalColorMode } =
-            useColorMode();
+        const { changeColorMode, colorMode } = useColorMode();
 
         return (
             <Menu
@@ -219,9 +213,8 @@ const ColorModeButton: FC<ColorModeButtonProps> = memo(
                 {...menuProps}
             >
                 <IconButton
-                    as={IconButton}
                     variant="ghost"
-                    aria-label="Open color mode switching menu"
+                    aria-label="Toggle theme"
                     color="muted"
                     icon={
                         colorMode === "dark" ? (
@@ -247,7 +240,7 @@ ColorModeButton.displayName = "ColorModeButton";
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface MobileMenuProps extends DrawerProps {}
 
-const MobileMenu: FC<MobileMenuProps> = memo(({ isOpen, onClose }) => {
+const MobileMenu: FC<MobileMenuProps> = memo(({ open, onClose }) => {
     const breakpoint = useBreakpoint();
 
     useEffect(() => {
@@ -256,8 +249,8 @@ const MobileMenu: FC<MobileMenuProps> = memo(({ isOpen, onClose }) => {
 
     return (
         <Drawer
-            isFullHeight
-            isOpen={isOpen}
+            fullHeight={true}
+            open={open}
             roundedLeft="xl"
             w="auto"
             withCloseButton={false}
@@ -269,7 +262,7 @@ const MobileMenu: FC<MobileMenuProps> = memo(({ isOpen, onClose }) => {
                 justifyContent="flex-end"
                 pt="sm"
             >
-                <ButtonGroup isMobile {...{ isOpen, onClose }} />
+                <ButtonGroup isMobile {...{ open, onClose }} />
             </DrawerHeader>
         </Drawer>
     );

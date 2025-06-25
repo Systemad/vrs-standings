@@ -6,62 +6,50 @@
 import client from '@kubb/plugin-client/clients/axios'
 import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
 import type { QueryKey, QueryClient, UseSuspenseQueryOptions, UseSuspenseQueryResult } from '@tanstack/react-query'
-import type {
-  StandingsGetAvailableStandingsEndpointsQueryResponse,
-  StandingsGetAvailableStandingsEndpointsPathParams,
-} from '../../types/StandingsGetAvailableStandingsEndpoints.ts'
+import type { StandingsGetAvailableStandingsEndpointsQueryResponse } from '../../types/StandingsGetAvailableStandingsEndpoints.ts'
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 
-export const standingsGetAvailableStandingsEndpointsSuspenseQueryKey = (region: StandingsGetAvailableStandingsEndpointsPathParams['region']) =>
-  [{ url: '/api/standings/available/:region', params: { region: region } }] as const
+export const standingsGetAvailableStandingsEndpointsSuspenseQueryKey = () => [{ url: '/api/standings/available' }] as const
 
 export type StandingsGetAvailableStandingsEndpointsSuspenseQueryKey = ReturnType<typeof standingsGetAvailableStandingsEndpointsSuspenseQueryKey>
 
 /**
- * {@link /api/standings/available/:region}
+ * {@link /api/standings/available}
  */
-export async function standingsGetAvailableStandingsEndpointsSuspense(
-  region: StandingsGetAvailableStandingsEndpointsPathParams['region'],
-  config: Partial<RequestConfig> & { client?: typeof client } = {},
-) {
+export async function standingsGetAvailableStandingsEndpointsSuspense(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
   const { client: request = client, ...requestConfig } = config
 
   const res = await request<StandingsGetAvailableStandingsEndpointsQueryResponse, ResponseErrorConfig<Error>, unknown>({
     method: 'GET',
-    url: `/api/standings/available/${region}`,
+    url: `/api/standings/available`,
     ...requestConfig,
   })
   return res
 }
 
-export function standingsGetAvailableStandingsEndpointsSuspenseQueryOptions(
-  region: StandingsGetAvailableStandingsEndpointsPathParams['region'],
-  config: Partial<RequestConfig> & { client?: typeof client } = {},
-) {
-  const queryKey = standingsGetAvailableStandingsEndpointsSuspenseQueryKey(region)
+export function standingsGetAvailableStandingsEndpointsSuspenseQueryOptions(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
+  const queryKey = standingsGetAvailableStandingsEndpointsSuspenseQueryKey()
   return queryOptions<
     ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
     ResponseErrorConfig<Error>,
     ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
     typeof queryKey
   >({
-    enabled: !!region,
     queryKey,
     queryFn: async ({ signal }) => {
       config.signal = signal
-      return standingsGetAvailableStandingsEndpointsSuspense(region, config)
+      return standingsGetAvailableStandingsEndpointsSuspense(config)
     },
   })
 }
 
 /**
- * {@link /api/standings/available/:region}
+ * {@link /api/standings/available}
  */
 export function useStandingsGetAvailableStandingsEndpointsSuspense<
   TData = ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
   TQueryKey extends QueryKey = StandingsGetAvailableStandingsEndpointsSuspenseQueryKey,
 >(
-  region: StandingsGetAvailableStandingsEndpointsPathParams['region'],
   options: {
     query?: Partial<
       UseSuspenseQueryOptions<ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryKey>
@@ -70,11 +58,11 @@ export function useStandingsGetAvailableStandingsEndpointsSuspense<
   } = {},
 ) {
   const { query: { client: queryClient, ...queryOptions } = {}, client: config = {} } = options ?? {}
-  const queryKey = queryOptions?.queryKey ?? standingsGetAvailableStandingsEndpointsSuspenseQueryKey(region)
+  const queryKey = queryOptions?.queryKey ?? standingsGetAvailableStandingsEndpointsSuspenseQueryKey()
 
   const query = useSuspenseQuery(
     {
-      ...(standingsGetAvailableStandingsEndpointsSuspenseQueryOptions(region, config) as unknown as UseSuspenseQueryOptions),
+      ...(standingsGetAvailableStandingsEndpointsSuspenseQueryOptions(config) as unknown as UseSuspenseQueryOptions),
       queryKey,
       ...(queryOptions as unknown as Omit<UseSuspenseQueryOptions, 'queryKey'>),
     },
