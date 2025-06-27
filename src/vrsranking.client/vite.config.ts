@@ -55,6 +55,7 @@ const target = env.ASPNETCORE_HTTPS_PORT
 function injectScript(): Plugin {
     return {
         name: "vite-plugin-inject-scripts",
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         transformIndexHtml(html, _) {
             const content = getColorModeScript({
                 initialColorMode: defaultConfig.initialColorMode,
@@ -95,6 +96,11 @@ export default defineConfig({
                 target,
                 secure: false,
                 changeOrigin: false,
+            },
+            "^/api/markdown": {
+                target,
+                secure: false,
+                changeOrigin: true,
             },
         },
         port: parseInt(env.DEV_SERVER_PORT || "52032"),

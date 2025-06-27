@@ -11,7 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WeatherRouteImport } from './routes/weather'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TeamsTeamIdRouteImport } from './routes/teams/$teamId'
+import { Route as DetailsDateMdfileRouteImport } from './routes/details/$date/$mdfile'
 
 const WeatherRoute = WeatherRouteImport.update({
   id: '/weather',
@@ -23,40 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TeamsTeamIdRoute = TeamsTeamIdRouteImport.update({
-  id: '/teams/$teamId',
-  path: '/teams/$teamId',
+const DetailsDateMdfileRoute = DetailsDateMdfileRouteImport.update({
+  id: '/details/$date/$mdfile',
+  path: '/details/$date/$mdfile',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/weather': typeof WeatherRoute
-  '/teams/$teamId': typeof TeamsTeamIdRoute
+  '/details/$date/$mdfile': typeof DetailsDateMdfileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/weather': typeof WeatherRoute
-  '/teams/$teamId': typeof TeamsTeamIdRoute
+  '/details/$date/$mdfile': typeof DetailsDateMdfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/weather': typeof WeatherRoute
-  '/teams/$teamId': typeof TeamsTeamIdRoute
+  '/details/$date/$mdfile': typeof DetailsDateMdfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/weather' | '/teams/$teamId'
+  fullPaths: '/' | '/weather' | '/details/$date/$mdfile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/weather' | '/teams/$teamId'
-  id: '__root__' | '/' | '/weather' | '/teams/$teamId'
+  to: '/' | '/weather' | '/details/$date/$mdfile'
+  id: '__root__' | '/' | '/weather' | '/details/$date/$mdfile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   WeatherRoute: typeof WeatherRoute
-  TeamsTeamIdRoute: typeof TeamsTeamIdRoute
+  DetailsDateMdfileRoute: typeof DetailsDateMdfileRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,11 +75,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/teams/$teamId': {
-      id: '/teams/$teamId'
-      path: '/teams/$teamId'
-      fullPath: '/teams/$teamId'
-      preLoaderRoute: typeof TeamsTeamIdRouteImport
+    '/details/$date/$mdfile': {
+      id: '/details/$date/$mdfile'
+      path: '/details/$date/$mdfile'
+      fullPath: '/details/$date/$mdfile'
+      preLoaderRoute: typeof DetailsDateMdfileRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -88,7 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   WeatherRoute: WeatherRoute,
-  TeamsTeamIdRoute: TeamsTeamIdRoute,
+  DetailsDateMdfileRoute: DetailsDateMdfileRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

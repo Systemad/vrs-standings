@@ -1,6 +1,9 @@
 export type { StandingsGetAvailableStandingsEndpointsQueryKey } from './hooks/ApiHooks/useStandingsGetAvailableStandingsEndpoints.ts'
 export type { StandingsGetAvailableStandingsEndpointsInfiniteQueryKey } from './hooks/ApiHooks/useStandingsGetAvailableStandingsEndpointsInfinite.ts'
 export type { StandingsGetAvailableStandingsEndpointsSuspenseQueryKey } from './hooks/ApiHooks/useStandingsGetAvailableStandingsEndpointsSuspense.ts'
+export type { StandingsGetDetailEndpointQueryKey } from './hooks/ApiHooks/useStandingsGetDetailEndpoint.ts'
+export type { StandingsGetDetailEndpointInfiniteQueryKey } from './hooks/ApiHooks/useStandingsGetDetailEndpointInfinite.ts'
+export type { StandingsGetDetailEndpointSuspenseQueryKey } from './hooks/ApiHooks/useStandingsGetDetailEndpointSuspense.ts'
 export type { StandingsGetRegionsEndpointQueryKey } from './hooks/ApiHooks/useStandingsGetRegionsEndpoint.ts'
 export type { StandingsGetRegionsEndpointInfiniteQueryKey } from './hooks/ApiHooks/useStandingsGetRegionsEndpointInfinite.ts'
 export type { StandingsGetRegionsEndpointSuspenseQueryKey } from './hooks/ApiHooks/useStandingsGetRegionsEndpointSuspense.ts'
@@ -13,6 +16,8 @@ export type { WeatherForecastGetSuspenseQueryKey } from './hooks/WeatherForecast
 export type { AvailableRegionsWithDates } from './types/AvailableRegionsWithDates.ts'
 export type { Details } from './types/Details.ts'
 export type { GetAvailableStandingsResponse } from './types/GetAvailableStandingsResponse.ts'
+export type { GetDetailRequest } from './types/GetDetailRequest.ts'
+export type { GetDetailResponse } from './types/GetDetailResponse.ts'
 export type { GetRegionsResponse } from './types/GetRegionsResponse.ts'
 export type { GetStandingsRequest } from './types/GetStandingsRequest.ts'
 export type { GetStandingsResponse } from './types/GetStandingsResponse.ts'
@@ -21,6 +26,12 @@ export type {
   StandingsGetAvailableStandingsEndpointsQueryResponse,
   StandingsGetAvailableStandingsEndpointsQuery,
 } from './types/StandingsGetAvailableStandingsEndpoints.ts'
+export type {
+  StandingsGetDetailEndpointPathParams,
+  StandingsGetDetailEndpoint200,
+  StandingsGetDetailEndpointQueryResponse,
+  StandingsGetDetailEndpointQuery,
+} from './types/StandingsGetDetailEndpoint.ts'
 export type {
   StandingsGetRegionsEndpoint200,
   StandingsGetRegionsEndpointQueryResponse,
@@ -53,6 +64,24 @@ export {
   standingsGetAvailableStandingsEndpointsSuspenseQueryOptions,
   useStandingsGetAvailableStandingsEndpointsSuspense,
 } from './hooks/ApiHooks/useStandingsGetAvailableStandingsEndpointsSuspense.ts'
+export {
+  standingsGetDetailEndpointQueryKey,
+  standingsGetDetailEndpoint,
+  standingsGetDetailEndpointQueryOptions,
+  useStandingsGetDetailEndpoint,
+} from './hooks/ApiHooks/useStandingsGetDetailEndpoint.ts'
+export {
+  standingsGetDetailEndpointInfiniteQueryKey,
+  standingsGetDetailEndpointInfinite,
+  standingsGetDetailEndpointInfiniteQueryOptions,
+  useStandingsGetDetailEndpointInfinite,
+} from './hooks/ApiHooks/useStandingsGetDetailEndpointInfinite.ts'
+export {
+  standingsGetDetailEndpointSuspenseQueryKey,
+  standingsGetDetailEndpointSuspense,
+  standingsGetDetailEndpointSuspenseQueryOptions,
+  useStandingsGetDetailEndpointSuspense,
+} from './hooks/ApiHooks/useStandingsGetDetailEndpointSuspense.ts'
 export {
   standingsGetRegionsEndpointQueryKey,
   standingsGetRegionsEndpoint,

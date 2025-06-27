@@ -18,7 +18,6 @@ import {
     forwardRef,
     HStack,
     IconButton,
-    Image,
     Menu,
     mergeRefs,
     Spacer,
@@ -32,9 +31,24 @@ import {
     Link as YamadaLink,
 } from "@yamada-ui/react";
 import { memo, useEffect, useRef, useState } from "react";
-import { Link } from "@tanstack/react-router";
 import GithubIcon from "~/icons/GitHubIcon";
 
+/*
+                                <Image
+                                        src="/logo-black.png"
+                                        alt="VRS"
+                                        h={{ base: "8", sm: "7" }}
+                                        w="auto"
+                                        _dark={{ display: "none" }}
+                                    />
+                                    <Image
+                                        src="/logo-white.png"
+                                        alt="VRS"
+                                        h={{ base: "8", sm: "7" }}
+                                        w="auto"
+                                        _light={{ display: "none" }}
+                                    />
+*/
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface HeaderProps extends CenterProps {}
 
@@ -63,7 +77,7 @@ export const Header = memo(
                     w="full"
                     {...rest}
                 >
-                    <Center maxW="9xl" px={{ base: "lg", lg: "0" }} w="full">
+                    <Center maxW="8xl" px={{ base: "lg", lg: "0" }} w="full">
                         <VStack
                             backdropBlur="10px"
                             backdropFilter="auto"
@@ -80,8 +94,9 @@ export const Header = memo(
                         >
                             <HStack gap={{ base: "md", sm: "sm" }}>
                                 <Center
-                                    as={Link}
-                                    href="/"
+                                    as={YamadaLink}
+                                    href="https://github.com/ValveSoftware/counter-strike_regional_standings"
+                                    external
                                     aria-label="Yamada UI"
                                     rounded="md"
                                     transitionDuration="slower"
@@ -90,20 +105,7 @@ export const Header = memo(
                                     _focusVisible={{ boxShadow: "outline" }}
                                     _hover={{ opacity: 0.7 }}
                                 >
-                                    <Image
-                                        src="/logo-black.png"
-                                        alt="VRS"
-                                        h={{ base: "8", sm: "7" }}
-                                        w="auto"
-                                        _dark={{ display: "none" }}
-                                    />
-                                    <Image
-                                        src="/logo-white.png"
-                                        alt="VRS"
-                                        h={{ base: "8", sm: "7" }}
-                                        w="auto"
-                                        _light={{ display: "none" }}
-                                    />
+                                    valve regional standings
                                 </Center>
 
                                 <Spacer />

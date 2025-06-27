@@ -2,20 +2,19 @@
 
 public static class Paths
 {
-    public static string WorkRoot = "C:\\Users\\yeahg\\Documents\\webdev\\wheteverstest\\workdir";
-    public static string ExportedRoot = $"{WorkRoot}/exported";
-    public static string ReposRoot = $"{WorkRoot}/repos";
+    
+    public static string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+    public static string WorkRoot = Path.Combine(documentsPath, "webdev", "workdir");
+    
+    public static string ExportedRoot = Path.Combine(WorkRoot, "exported");
+    public static string ReposRoot = Path.Combine(WorkRoot, "repos");
 
-    public static string ExportedRules = $"{ExportedRoot}/counter-strike_rules_and_regs";
-    //public static string ExportedRankings = $"{ExportedRoot}/counter-strike_regional_standings";
-
-    public static string RulesRepo = $"{ReposRoot}/counter-strike_rules_and_regs";
-    public static string RankingsRepo = $"{ReposRoot}/counter-strike_regional_standings";
+    public static string RankingsRepo = Path.Combine(ReposRoot, "counter-strike_regional_standings");
 
     public static class Rankings
     {
-        public static string Root = $"{WorkRoot}/counter-strike_regional_standings";
-        public static string Y2025 = $"{WorkRoot}/counter-strike_regional_standings/live/2025";
-        public static string Y2025Details = $"{WorkRoot}/counter-strike_regional_standings/live/2025/details";
+        public static string Root = Path.Combine(WorkRoot, "counter-strike_regional_standings");
+        public static string Y2025 = Path.Combine(WorkRoot, "counter-strike_regional_standings", "live", "2025");
+        public static string Y2025Details = Path.Combine(RankingsRepo, "live", "2025", "details");
     }
 }

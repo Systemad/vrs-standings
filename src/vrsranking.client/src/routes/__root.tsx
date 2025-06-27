@@ -19,7 +19,7 @@ function RootComponent() {
                 <HStack
                     alignItems="flex-start"
                     gap="0"
-                    maxW="9xl"
+                    maxW="8xl"
                     px={{ base: "lg", md: "md" }}
                     py={{ base: "lg", sm: "normal" }}
                     w="full"

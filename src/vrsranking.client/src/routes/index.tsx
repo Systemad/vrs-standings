@@ -1,99 +1,37 @@
-import {
-    ArrowRightIcon,
-    GameControllerIcon,
-    GlobeIcon,
-    RabbitIcon,
-} from "@phosphor-icons/react";
+import { GlobeIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
     Container,
-    Box,
-    Image,
     HStack,
     Text,
-    Badge,
-    Motion,
+    Option,
     RadioCardGroup,
     RadioCard,
     RadioCardLabel,
+    Select,
+    Center,
+    Tag,
+    Loading,
 } from "@yamada-ui/react";
 import { PagingTable, type Column } from "@yamada-ui/table";
 import { useEffect, useMemo, useState } from "react";
 import {
     useStandingsGetAvailableStandingsEndpoints,
     useStandingsGetStandingsEndpoint,
+    type Details,
     type TeamStanding,
 } from "~/api";
+import TrophyIcon from "~/logos/TrophyLogo";
 export const Route = createFileRoute("/")({
     component: Index,
 });
 
 function Index() {
-    const columns = useMemo<Column<TeamStanding>[]>(
-        () => [
-            {
-                header: "Position",
-                accessorKey: "standings",
-                size: 1,
-                maxSize: 1,
-                cell: ({ getValue }) => (
-                    <Box
-                        backdropBlur="2xl"
-                        rounded="lg"
-                        background={"pink"}
-                        textAlign="center"
-                    >
-                        <Text>{getValue<string>()}</Text>
-                    </Box>
-                ),
-            },
-            {
-                header: "Team",
-                accessorKey: "teamName",
-                enableSorting: false,
-                cell: (info) => (
-                    <HStack gap={2}>
-                        <Image
-                            src="https://img-cdn.hltv.org/teamlogo/yeXBldn9w8LZCgdElAenPs.png?ixlib=java-2.1.0&w=50&s=15eaba0b75250065d20162d2cb05e3e6"
-                            width={5}
-                            height={5}
-                            fit="contain"
-                        />
-                        <Text>{info.getValue<string>()}</Text>
-                    </HStack>
-                ),
-            },
-            {
-                header: "Roster",
-                accessorKey: "roster",
-                enableSorting: false,
-                cell: ({ getValue }) => (
-                    <HStack gap={2}>
-                        {getValue<string[]>().map((player, index) => (
-                            <Badge key={index} rounded="md">
-                                {player}
-                            </Badge>
-                        ))}
-                    </HStack>
-                ),
-            },
-            {
-                header: "Points",
-                accessorKey: "points",
-                cell: ({ getValue }) => (
-                    <Text size="3xl">{getValue<string>()}</Text>
-                ),
-            },
-        ],
-        []
-    );
-
     const [region, setRegion] = useState<string>("Global");
     const [date, setDate] = useState<string>("");
 
     const {
         data: availableStandingsData,
-        error: availableStandingsError,
         isPending: availableStandingsPending,
     } = useStandingsGetAvailableStandingsEndpoints();
 
@@ -122,51 +60,189 @@ function Index() {
         }
     );
 
-    if (isPending) return "Loading...";
+    const columns = useMemo<Column<TeamStanding>[]>(
+        () => [
+            {
+                header: "Position",
+                accessorKey: "standings",
+                size: 1,
+                maxSize: 1,
+                cell: (info) => (
+                    <Center
+                        key={info.row.index}
+                        rounded="xl"
+                        p="1.25"
+                        bg={["blackAlpha.50", "whiteAlpha.100"]}
+                        textAlign="center"
+                    >
+                        <Text fontSize="lg">{info.getValue<string>()}</Text>
+                    </Center>
+                ),
+            },
+            {
+                header: "Team",
+                accessorKey: "teamName",
+                enableSorting: false,
+                cell: (info) => {
+                    const isCurrentTeam =
+                        data?.data.standings[0]?.teamName ===
+                        info.row.original.teamName;
+                    const isGlobalRegion = region == "Global";
+                    return (
+                        <HStack key={info.row.index} gap={2}>
+                            {isCurrentTeam && isGlobalRegion && <TrophyIcon />}
+
+                            <Text>{info.getValue<string>()}</Text>
+                        </HStack>
+                    );
+                },
+            },
+            {
+                header: "Roster",
+                accessorKey: "roster",
+                enableSorting: false,
+                cell: (info) => {
+                    const players = info.getValue<string[]>();
+                    const isCurrentTeam =
+                        data?.data.standings[0]?.teamName ===
+                        info.row.original.teamName;
+                    const isGlobalRegion =
+                        region.toLocaleLowerCase() === "global";
+                    const isGlobalAndCurrentTeam =
+                        isCurrentTeam && isGlobalRegion;
+                    return (
+                        <HStack key={info.row.index} gap={2}>
+                            {players.map((player, index) => (
+                                <Tag
+                                    key={index}
+                                    variant={"subtle"}
+                                    colorScheme={
+                                        isGlobalAndCurrentTeam
+                                            ? "yellow"
+                                            : "primary"
+                                    }
+                                    rounded="lg"
+                                >
+                                    {player}
+                                </Tag>
+                            ))}
+                        </HStack>
+                    );
+                },
+            },
+            {
+                header: "Points",
+                accessorKey: "points",
+                cell: (info) => (
+                    <Text key={info.row.index} size="3xl">
+                        {info.getValue<string>()}
+                    </Text>
+                ),
+            },
+            {
+                header: "Details",
+                accessorFn: (row: TeamStanding) => row.details,
+                cell: (info) => {
+                    const details = info.getValue<Details>();
+
+                    if (!details) return <span>No details</span>;
+
+                    return (
+                        <Text key={info.row.index} size="3xl">
+                            {info.getValue<string>()}
+                        </Text>
+                    );
+                },
+            },
+        ],
+        [data?.data.standings, region]
+    );
+
+    if (isPending) {
+        return (
+            <Center
+                position="fixed"
+                top={0}
+                left={0}
+                w="100vw"
+                h="100vh"
+                bg="blackAlpha.700"
+                zIndex={9999}
+            >
+                <Loading variant="puff" fontSize="6xl" />
+            </Center>
+        );
+    }
 
     if (error) return "An error has occurred: " + error.message;
 
     return (
-        <Container
-            rounded="2xl"
-            variant="surface"
-            bg={["blackAlpha.50", "whiteAlpha.100"]}
-        >
-            <RadioCardGroup w="fit-content" withIcon={false}>
-                <RadioCard value="Global" rounded="xl">
-                    <RadioCardLabel>
-                        <HStack gap="sm">
-                            <RabbitIcon color="muted" fontSize="2xl" />
-                            <Text>Global</Text>
-                        </HStack>
-                    </RadioCardLabel>
-                </RadioCard>
+        <Container rounded="2xl" bg={["blackAlpha.50", "whiteAlpha.100"]}>
+            <HStack justify={"space-between"}>
+                <RadioCardGroup
+                    w="fit-content"
+                    withIcon={false}
+                    value={region}
+                    onChange={setRegion}
+                >
+                    <RadioCard key={"global"} value="Global" rounded="xl">
+                        <RadioCardLabel>
+                            <HStack gap="sm">
+                                <GlobeIcon color="muted" fontSize="2xl" />
+                                <Text>Global</Text>
+                            </HStack>
+                        </RadioCardLabel>
+                    </RadioCard>
 
-                <RadioCard value="Europe" rounded="xl">
-                    <HStack gap="sm">
-                        <GlobeIcon color="muted" fontSize="2xl" />
-                        <Text>Europe</Text>
-                    </HStack>
-                </RadioCard>
-
-                <RadioCard value="Americas" rounded="xl">
-                    <RadioCardLabel>
+                    <RadioCard key={"europe"} value="Europe" rounded="xl">
                         <HStack gap="sm">
-                            <GameControllerIcon color="muted" fontSize="2xl" />
-                            <Text>Americas</Text>
+                            <Text>Europe</Text>
                         </HStack>
-                    </RadioCardLabel>
-                </RadioCard>
+                    </RadioCard>
 
-                <RadioCard value="Asia" rounded="xl">
-                    <RadioCardLabel>
-                        <HStack gap="sm">
-                            <GameControllerIcon color="muted" fontSize="2xl" />
-                            <Text>Asia</Text>
-                        </HStack>
-                    </RadioCardLabel>
-                </RadioCard>
-            </RadioCardGroup>
+                    <RadioCard key={"americas"} value="Americas" rounded="xl">
+                        <RadioCardLabel>
+                            <HStack gap="sm">
+                                <Text>Americas</Text>
+                            </HStack>
+                        </RadioCardLabel>
+                    </RadioCard>
+
+                    <RadioCard key={"asia"} value="Asia" rounded="xl">
+                        <RadioCardLabel>
+                            <HStack gap="sm">
+                                <Text>Asia</Text>
+                            </HStack>
+                        </RadioCardLabel>
+                    </RadioCard>
+                </RadioCardGroup>
+
+                <Select
+                    rounded="xl"
+                    variant={"filled"}
+                    size="md"
+                    value={date}
+                    disabled={availableStandingsPending}
+                    onChange={setDate}
+                    header={
+                        <Center pt="2" px="3">
+                            These are the available dates of VRS rankings
+                        </Center>
+                    }
+                >
+                    {availableStandingsData?.data.regionWithDates
+                        ?.find(
+                            (r) =>
+                                r.region.toLocaleLowerCase() ===
+                                region.toLocaleLowerCase()
+                        )
+                        ?.dates.map((s) => (
+                            <Option key={s} value={s}>
+                                {s}
+                            </Option>
+                        ))}
+                </Select>
+            </HStack>
 
             <PagingTable
                 whiteSpace={{ base: "inherit", lg: "nowrap" }}
@@ -199,13 +275,3 @@ function Index() {
         </Container>
     );
 }
-
-/*
-
-            bgGradient={[
-                "linear(to-br, gray.700, blue.700)",
-                "linear(to-br, blue.700, gray.700)",
-            ]}
-
-                bg="transparentize(gray.800, 50%)"
-*/

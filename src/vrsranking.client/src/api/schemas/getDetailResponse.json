@@ -1,0 +1,1 @@
+{"type":"object","additionalProperties":false,"required":["markdownString"],"properties":{"markdownString":{"type":"string"}},"x-readme-ref-name":"GetDetailResponse"}
