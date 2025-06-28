@@ -1,5 +1,4 @@
-import { GlobeIcon } from "@phosphor-icons/react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
     Container,
     HStack,
@@ -12,11 +11,14 @@ import {
     Center,
     Tag,
     Loading,
+    Button,
+    useLoading,
 } from "@yamada-ui/react";
 import { PagingTable, type Column } from "@yamada-ui/table";
 import { useEffect, useMemo, useState } from "react";
 import {
     useStandingsGetAvailableStandingsEndpoints,
+    useStandingsGetAvailableStandingsEndpointsSuspense,
     useStandingsGetStandingsEndpoint,
     type Details,
     type TeamStanding,
@@ -27,13 +29,14 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+    const { screen, page, background } = useLoading();
+
     const [region, setRegion] = useState<string>("Global");
     const [date, setDate] = useState<string>("");
-
     const {
         data: availableStandingsData,
         isPending: availableStandingsPending,
-    } = useStandingsGetAvailableStandingsEndpoints();
+    } = useStandingsGetAvailableStandingsEndpointsSuspense();
 
     useEffect(() => {
         if (availableStandingsData?.data.regionWithDates?.length) {
@@ -133,6 +136,7 @@ function Index() {
             {
                 header: "Points",
                 accessorKey: "points",
+
                 cell: (info) => (
                     <Text key={info.row.index} size="3xl">
                         {info.getValue<string>()}
@@ -141,6 +145,7 @@ function Index() {
             },
             {
                 header: "Details",
+                enableSorting: false,
                 accessorFn: (row: TeamStanding) => row.details,
                 cell: (info) => {
                     const details = info.getValue<Details>();
@@ -148,9 +153,21 @@ function Index() {
                     if (!details) return <span>No details</span>;
 
                     return (
-                        <Text key={info.row.index} size="3xl">
-                            {info.getValue<string>()}
-                        </Text>
+                        <Link
+                            to={"/details/$date/$mdfile"}
+                            params={{
+                                date: details.key,
+                                mdfile: details.filename,
+                            }}
+                        >
+                            <Button
+                                colorScheme="link"
+                                variant="link"
+                                size={"sm"}
+                            >
+                                View
+                            </Button>
+                        </Link>
                     );
                 },
             },
@@ -159,19 +176,7 @@ function Index() {
     );
 
     if (isPending) {
-        return (
-            <Center
-                position="fixed"
-                top={0}
-                left={0}
-                w="100vw"
-                h="100vh"
-                bg="blackAlpha.700"
-                zIndex={9999}
-            >
-                <Loading variant="puff" fontSize="6xl" />
-            </Center>
-        );
+        return null;
     }
 
     if (error) return "An error has occurred: " + error.message;
@@ -188,7 +193,6 @@ function Index() {
                     <RadioCard key={"global"} value="Global" rounded="xl">
                         <RadioCardLabel>
                             <HStack gap="sm">
-                                <GlobeIcon color="muted" fontSize="2xl" />
                                 <Text>Global</Text>
                             </HStack>
                         </RadioCardLabel>
