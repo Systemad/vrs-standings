@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { QueryKey, QueryClient, UseSuspenseQueryOptions, UseSuspenseQueryResult } from '@tanstack/react-query'
 import type { StandingsGetStandingsEndpointQueryResponse, StandingsGetStandingsEndpointPathParams } from '../../types/StandingsGetStandingsEndpoint.ts'
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
@@ -31,7 +31,7 @@ export async function standingsGetStandingsEndpointSuspense(
     url: `/api/standings/${region}/${date}`,
     ...requestConfig,
   })
-  return res
+  return res.data
 }
 
 export function standingsGetStandingsEndpointSuspenseQueryOptions(
@@ -40,12 +40,7 @@ export function standingsGetStandingsEndpointSuspenseQueryOptions(
   config: Partial<RequestConfig> & { client?: typeof client } = {},
 ) {
   const queryKey = standingsGetStandingsEndpointSuspenseQueryKey(region, date)
-  return queryOptions<
-    ResponseConfig<StandingsGetStandingsEndpointQueryResponse>,
-    ResponseErrorConfig<Error>,
-    ResponseConfig<StandingsGetStandingsEndpointQueryResponse>,
-    typeof queryKey
-  >({
+  return queryOptions<StandingsGetStandingsEndpointQueryResponse, ResponseErrorConfig<Error>, StandingsGetStandingsEndpointQueryResponse, typeof queryKey>({
     enabled: !!(region && date),
     queryKey,
     queryFn: async ({ signal }) => {
@@ -59,13 +54,13 @@ export function standingsGetStandingsEndpointSuspenseQueryOptions(
  * {@link /api/standings/:region/:date}
  */
 export function useStandingsGetStandingsEndpointSuspense<
-  TData = ResponseConfig<StandingsGetStandingsEndpointQueryResponse>,
+  TData = StandingsGetStandingsEndpointQueryResponse,
   TQueryKey extends QueryKey = StandingsGetStandingsEndpointSuspenseQueryKey,
 >(
   region: StandingsGetStandingsEndpointPathParams['region'],
   date: StandingsGetStandingsEndpointPathParams['date'],
   options: {
-    query?: Partial<UseSuspenseQueryOptions<ResponseConfig<StandingsGetStandingsEndpointQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
+    query?: Partial<UseSuspenseQueryOptions<StandingsGetStandingsEndpointQueryResponse, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
       client?: QueryClient
     }
     client?: Partial<RequestConfig> & { client?: typeof client }

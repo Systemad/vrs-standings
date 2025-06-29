@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { QueryKey, QueryClient, UseSuspenseQueryOptions, UseSuspenseQueryResult } from '@tanstack/react-query'
 import type { WeatherForecastGetQueryResponse } from '../../types/WeatherForecastGet.ts'
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
@@ -20,17 +20,12 @@ export async function weatherForecastGetSuspense(config: Partial<RequestConfig> 
   const { client: request = client, ...requestConfig } = config
 
   const res = await request<WeatherForecastGetQueryResponse, ResponseErrorConfig<Error>, unknown>({ method: 'GET', url: `/WeatherForecast`, ...requestConfig })
-  return res
+  return res.data
 }
 
 export function weatherForecastGetSuspenseQueryOptions(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
   const queryKey = weatherForecastGetSuspenseQueryKey()
-  return queryOptions<
-    ResponseConfig<WeatherForecastGetQueryResponse>,
-    ResponseErrorConfig<Error>,
-    ResponseConfig<WeatherForecastGetQueryResponse>,
-    typeof queryKey
-  >({
+  return queryOptions<WeatherForecastGetQueryResponse, ResponseErrorConfig<Error>, WeatherForecastGetQueryResponse, typeof queryKey>({
     queryKey,
     queryFn: async ({ signal }) => {
       config.signal = signal
@@ -42,14 +37,9 @@ export function weatherForecastGetSuspenseQueryOptions(config: Partial<RequestCo
 /**
  * {@link /WeatherForecast}
  */
-export function useWeatherForecastGetSuspense<
-  TData = ResponseConfig<WeatherForecastGetQueryResponse>,
-  TQueryKey extends QueryKey = WeatherForecastGetSuspenseQueryKey,
->(
+export function useWeatherForecastGetSuspense<TData = WeatherForecastGetQueryResponse, TQueryKey extends QueryKey = WeatherForecastGetSuspenseQueryKey>(
   options: {
-    query?: Partial<UseSuspenseQueryOptions<ResponseConfig<WeatherForecastGetQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
-      client?: QueryClient
-    }
+    query?: Partial<UseSuspenseQueryOptions<WeatherForecastGetQueryResponse, ResponseErrorConfig<Error>, TData, TQueryKey>> & { client?: QueryClient }
     client?: Partial<RequestConfig> & { client?: typeof client }
   } = {},
 ) {

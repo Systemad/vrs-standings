@@ -16,7 +16,7 @@ export default tseslint.config(
             "dist",
             "**/routeTree.gen.ts",
             "**/routeTree.gen.ts",
-            "api/**",
+            "**/api/**",
         ],
     },
     {

@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { InfiniteData, QueryKey, QueryClient, InfiniteQueryObserverOptions, UseInfiniteQueryResult } from '@tanstack/react-query'
 import type { StandingsGetAvailableStandingsEndpointsQueryResponse } from '../../types/StandingsGetAvailableStandingsEndpoints.ts'
 import { infiniteQueryOptions, useInfiniteQuery } from '@tanstack/react-query'
@@ -24,15 +24,15 @@ export async function standingsGetAvailableStandingsEndpointsInfinite(config: Pa
     url: `/api/standings/available`,
     ...requestConfig,
   })
-  return res
+  return res.data
 }
 
 export function standingsGetAvailableStandingsEndpointsInfiniteQueryOptions(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
   const queryKey = standingsGetAvailableStandingsEndpointsInfiniteQueryKey()
   return infiniteQueryOptions<
-    ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
+    StandingsGetAvailableStandingsEndpointsQueryResponse,
     ResponseErrorConfig<Error>,
-    ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
+    StandingsGetAvailableStandingsEndpointsQueryResponse,
     typeof queryKey
   >({
     queryKey,
@@ -50,14 +50,14 @@ export function standingsGetAvailableStandingsEndpointsInfiniteQueryOptions(conf
  * {@link /api/standings/available}
  */
 export function useStandingsGetAvailableStandingsEndpointsInfinite<
-  TData = InfiniteData<ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>>,
-  TQueryData = ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
+  TData = InfiniteData<StandingsGetAvailableStandingsEndpointsQueryResponse>,
+  TQueryData = StandingsGetAvailableStandingsEndpointsQueryResponse,
   TQueryKey extends QueryKey = StandingsGetAvailableStandingsEndpointsInfiniteQueryKey,
 >(
   options: {
-    query?: Partial<
-      InfiniteQueryObserverOptions<ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryKey>
-    > & { client?: QueryClient }
+    query?: Partial<InfiniteQueryObserverOptions<StandingsGetAvailableStandingsEndpointsQueryResponse, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
+      client?: QueryClient
+    }
     client?: Partial<RequestConfig> & { client?: typeof client }
   } = {},
 ) {

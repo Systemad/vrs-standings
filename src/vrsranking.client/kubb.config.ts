@@ -23,7 +23,7 @@ export default defineConfig(() => {
                     name: ({ group }) => `${group}Hooks`,
                 },
                 client: {
-                    dataReturnType: "full",
+                    dataReturnType: "data",
                     baseURL: "",
                 },
                 mutation: {

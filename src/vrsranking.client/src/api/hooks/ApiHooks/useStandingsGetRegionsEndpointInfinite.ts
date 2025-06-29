@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { InfiniteData, QueryKey, QueryClient, InfiniteQueryObserverOptions, UseInfiniteQueryResult } from '@tanstack/react-query'
 import type { StandingsGetRegionsEndpointQueryResponse } from '../../types/StandingsGetRegionsEndpoint.ts'
 import { infiniteQueryOptions, useInfiniteQuery } from '@tanstack/react-query'
@@ -24,17 +24,12 @@ export async function standingsGetRegionsEndpointInfinite(config: Partial<Reques
     url: `/api/standings/regions`,
     ...requestConfig,
   })
-  return res
+  return res.data
 }
 
 export function standingsGetRegionsEndpointInfiniteQueryOptions(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
   const queryKey = standingsGetRegionsEndpointInfiniteQueryKey()
-  return infiniteQueryOptions<
-    ResponseConfig<StandingsGetRegionsEndpointQueryResponse>,
-    ResponseErrorConfig<Error>,
-    ResponseConfig<StandingsGetRegionsEndpointQueryResponse>,
-    typeof queryKey
-  >({
+  return infiniteQueryOptions<StandingsGetRegionsEndpointQueryResponse, ResponseErrorConfig<Error>, StandingsGetRegionsEndpointQueryResponse, typeof queryKey>({
     queryKey,
     queryFn: async ({ signal }) => {
       config.signal = signal
@@ -50,12 +45,12 @@ export function standingsGetRegionsEndpointInfiniteQueryOptions(config: Partial<
  * {@link /api/standings/regions}
  */
 export function useStandingsGetRegionsEndpointInfinite<
-  TData = InfiniteData<ResponseConfig<StandingsGetRegionsEndpointQueryResponse>>,
-  TQueryData = ResponseConfig<StandingsGetRegionsEndpointQueryResponse>,
+  TData = InfiniteData<StandingsGetRegionsEndpointQueryResponse>,
+  TQueryData = StandingsGetRegionsEndpointQueryResponse,
   TQueryKey extends QueryKey = StandingsGetRegionsEndpointInfiniteQueryKey,
 >(
   options: {
-    query?: Partial<InfiniteQueryObserverOptions<ResponseConfig<StandingsGetRegionsEndpointQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
+    query?: Partial<InfiniteQueryObserverOptions<StandingsGetRegionsEndpointQueryResponse, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
       client?: QueryClient
     }
     client?: Partial<RequestConfig> & { client?: typeof client }

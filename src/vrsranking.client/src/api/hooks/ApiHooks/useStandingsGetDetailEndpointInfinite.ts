@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { InfiniteData, QueryKey, QueryClient, InfiniteQueryObserverOptions, UseInfiniteQueryResult } from '@tanstack/react-query'
 import type { StandingsGetDetailEndpointQueryResponse, StandingsGetDetailEndpointPathParams } from '../../types/StandingsGetDetailEndpoint.ts'
 import { infiniteQueryOptions, useInfiniteQuery } from '@tanstack/react-query'
@@ -31,7 +31,7 @@ export async function standingsGetDetailEndpointInfinite(
     url: `/api/markdown/${date}/${filename}`,
     ...requestConfig,
   })
-  return res
+  return res.data
 }
 
 export function standingsGetDetailEndpointInfiniteQueryOptions(
@@ -40,12 +40,7 @@ export function standingsGetDetailEndpointInfiniteQueryOptions(
   config: Partial<RequestConfig> & { client?: typeof client } = {},
 ) {
   const queryKey = standingsGetDetailEndpointInfiniteQueryKey(date, filename)
-  return infiniteQueryOptions<
-    ResponseConfig<StandingsGetDetailEndpointQueryResponse>,
-    ResponseErrorConfig<Error>,
-    ResponseConfig<StandingsGetDetailEndpointQueryResponse>,
-    typeof queryKey
-  >({
+  return infiniteQueryOptions<StandingsGetDetailEndpointQueryResponse, ResponseErrorConfig<Error>, StandingsGetDetailEndpointQueryResponse, typeof queryKey>({
     enabled: !!(date && filename),
     queryKey,
     queryFn: async ({ signal }) => {
@@ -62,14 +57,14 @@ export function standingsGetDetailEndpointInfiniteQueryOptions(
  * {@link /api/markdown/:date/:filename}
  */
 export function useStandingsGetDetailEndpointInfinite<
-  TData = InfiniteData<ResponseConfig<StandingsGetDetailEndpointQueryResponse>>,
-  TQueryData = ResponseConfig<StandingsGetDetailEndpointQueryResponse>,
+  TData = InfiniteData<StandingsGetDetailEndpointQueryResponse>,
+  TQueryData = StandingsGetDetailEndpointQueryResponse,
   TQueryKey extends QueryKey = StandingsGetDetailEndpointInfiniteQueryKey,
 >(
   date: StandingsGetDetailEndpointPathParams['date'],
   filename: StandingsGetDetailEndpointPathParams['filename'],
   options: {
-    query?: Partial<InfiniteQueryObserverOptions<ResponseConfig<StandingsGetDetailEndpointQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
+    query?: Partial<InfiniteQueryObserverOptions<StandingsGetDetailEndpointQueryResponse, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
       client?: QueryClient
     }
     client?: Partial<RequestConfig> & { client?: typeof client }

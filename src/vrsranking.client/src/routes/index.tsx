@@ -10,15 +10,12 @@ import {
     Select,
     Center,
     Tag,
-    Loading,
     Button,
-    useLoading,
 } from "@yamada-ui/react";
 import { PagingTable, type Column } from "@yamada-ui/table";
 import { useEffect, useMemo, useState } from "react";
 import {
     useStandingsGetAvailableStandingsEndpoints,
-    useStandingsGetAvailableStandingsEndpointsSuspense,
     useStandingsGetStandingsEndpoint,
     type Details,
     type TeamStanding,
@@ -29,29 +26,26 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-    const { screen, page, background } = useLoading();
-
     const [region, setRegion] = useState<string>("Global");
     const [date, setDate] = useState<string>("");
     const {
         data: availableStandingsData,
         isPending: availableStandingsPending,
-    } = useStandingsGetAvailableStandingsEndpointsSuspense();
+    } = useStandingsGetAvailableStandingsEndpoints({query: {staleTime: 60000}});
+
 
     useEffect(() => {
-        if (availableStandingsData?.data.regionWithDates?.length) {
-            const defaultRegion =
-                availableStandingsData.data.regionWithDates.find(
-                    (r) =>
-                        r.region.toLocaleLowerCase() ===
-                        region.toLocaleLowerCase()
-                );
+        if (availableStandingsData?.regionWithDates?.length) {
+            const defaultRegion = availableStandingsData.regionWithDates.find(
+                (r) =>
+                    r.region.toLocaleLowerCase() === region.toLocaleLowerCase()
+            );
 
             if (defaultRegion && defaultRegion.dates.length > 0) {
                 setDate(defaultRegion.dates[0]!);
             }
         }
-    }, [region, availableStandingsData?.data]);
+    }, [region, availableStandingsData]);
 
     const { data, error, isPending } = useStandingsGetStandingsEndpoint(
         region,
@@ -88,7 +82,7 @@ function Index() {
                 enableSorting: false,
                 cell: (info) => {
                     const isCurrentTeam =
-                        data?.data.standings[0]?.teamName ===
+                        data?.standings[0]?.teamName ===
                         info.row.original.teamName;
                     const isGlobalRegion = region == "Global";
                     return (
@@ -107,7 +101,7 @@ function Index() {
                 cell: (info) => {
                     const players = info.getValue<string[]>();
                     const isCurrentTeam =
-                        data?.data.standings[0]?.teamName ===
+                        data?.standings[0]?.teamName ===
                         info.row.original.teamName;
                     const isGlobalRegion =
                         region.toLocaleLowerCase() === "global";
@@ -172,7 +166,7 @@ function Index() {
                 },
             },
         ],
-        [data?.data.standings, region]
+        [data?.standings, region]
     );
 
     if (isPending) {
@@ -234,7 +228,7 @@ function Index() {
                         </Center>
                     }
                 >
-                    {availableStandingsData?.data.regionWithDates
+                    {availableStandingsData?.regionWithDates
                         ?.find(
                             (r) =>
                                 r.region.toLocaleLowerCase() ===
@@ -269,7 +263,7 @@ function Index() {
                 rounded="lg"
                 size="md"
                 columns={columns}
-                data={data.data.standings ?? []}
+                data={data.standings ?? []}
                 enableRowSelection={false}
                 selectProps={{ variant: "flushed" }}
                 pagingControlProps={{

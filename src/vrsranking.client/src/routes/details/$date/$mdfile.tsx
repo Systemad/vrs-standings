@@ -1,21 +1,31 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, ErrorComponent, type ErrorComponentProps } from "@tanstack/react-router";
 import { Markdown } from "@yamada-ui/markdown";
 import { Container } from "@yamada-ui/react";
-import { useStandingsGetDetailEndpoint } from "~/api";
+import { standingsGetDetailEndpointQueryOptions } from "~/api";
 
 export const Route = createFileRoute("/details/$date/$mdfile")({
+    loader: ({context: {queryClient}, params: {date, mdfile}}) => {
+        return queryClient.ensureQueryData(standingsGetDetailEndpointQueryOptions(
+                    date,
+                    mdfile,
+                ))
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    errorComponent: PostErrorComponent as any,
     component: RouteComponent,
 });
 
+export function PostErrorComponent({ error }: ErrorComponentProps) {
+  return <ErrorComponent error={error} />;
+}
+
 function RouteComponent() {
-    const { date, mdfile } = Route.useParams();
 
-    const { data, isPending } = useStandingsGetDetailEndpoint(date, mdfile);
+    const { markdownString } = Route.useLoaderData();
 
-    if (isPending) return <>Loading</>;
     return (
         <Container rounded="2xl" bg={["blackAlpha.50", "whiteAlpha.100"]}>
-            <Markdown>{data?.data.markdownString}</Markdown>;
+                <Markdown>{markdownString}</Markdown>;
         </Container>
     );
 }

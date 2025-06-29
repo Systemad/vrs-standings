@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from '@tanstack/react-query'
 import type { StandingsGetAvailableStandingsEndpointsQueryResponse } from '../../types/StandingsGetAvailableStandingsEndpoints.ts'
 import { queryOptions, useQuery } from '@tanstack/react-query'
@@ -24,15 +24,15 @@ export async function standingsGetAvailableStandingsEndpoints(config: Partial<Re
     url: `/api/standings/available`,
     ...requestConfig,
   })
-  return res
+  return res.data
 }
 
 export function standingsGetAvailableStandingsEndpointsQueryOptions(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
   const queryKey = standingsGetAvailableStandingsEndpointsQueryKey()
   return queryOptions<
-    ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
+    StandingsGetAvailableStandingsEndpointsQueryResponse,
     ResponseErrorConfig<Error>,
-    ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
+    StandingsGetAvailableStandingsEndpointsQueryResponse,
     typeof queryKey
   >({
     queryKey,
@@ -47,14 +47,14 @@ export function standingsGetAvailableStandingsEndpointsQueryOptions(config: Part
  * {@link /api/standings/available}
  */
 export function useStandingsGetAvailableStandingsEndpoints<
-  TData = ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
-  TQueryData = ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>,
+  TData = StandingsGetAvailableStandingsEndpointsQueryResponse,
+  TQueryData = StandingsGetAvailableStandingsEndpointsQueryResponse,
   TQueryKey extends QueryKey = StandingsGetAvailableStandingsEndpointsQueryKey,
 >(
   options: {
-    query?: Partial<
-      QueryObserverOptions<ResponseConfig<StandingsGetAvailableStandingsEndpointsQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>
-    > & { client?: QueryClient }
+    query?: Partial<QueryObserverOptions<StandingsGetAvailableStandingsEndpointsQueryResponse, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>> & {
+      client?: QueryClient
+    }
     client?: Partial<RequestConfig> & { client?: typeof client }
   } = {},
 ) {

@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from '@tanstack/react-query'
 import type { StandingsGetDetailEndpointQueryResponse, StandingsGetDetailEndpointPathParams } from '../../types/StandingsGetDetailEndpoint.ts'
 import { queryOptions, useQuery } from '@tanstack/react-query'
@@ -31,7 +31,7 @@ export async function standingsGetDetailEndpoint(
     url: `/api/markdown/${date}/${filename}`,
     ...requestConfig,
   })
-  return res
+  return res.data
 }
 
 export function standingsGetDetailEndpointQueryOptions(
@@ -40,12 +40,7 @@ export function standingsGetDetailEndpointQueryOptions(
   config: Partial<RequestConfig> & { client?: typeof client } = {},
 ) {
   const queryKey = standingsGetDetailEndpointQueryKey(date, filename)
-  return queryOptions<
-    ResponseConfig<StandingsGetDetailEndpointQueryResponse>,
-    ResponseErrorConfig<Error>,
-    ResponseConfig<StandingsGetDetailEndpointQueryResponse>,
-    typeof queryKey
-  >({
+  return queryOptions<StandingsGetDetailEndpointQueryResponse, ResponseErrorConfig<Error>, StandingsGetDetailEndpointQueryResponse, typeof queryKey>({
     enabled: !!(date && filename),
     queryKey,
     queryFn: async ({ signal }) => {
@@ -59,14 +54,14 @@ export function standingsGetDetailEndpointQueryOptions(
  * {@link /api/markdown/:date/:filename}
  */
 export function useStandingsGetDetailEndpoint<
-  TData = ResponseConfig<StandingsGetDetailEndpointQueryResponse>,
-  TQueryData = ResponseConfig<StandingsGetDetailEndpointQueryResponse>,
+  TData = StandingsGetDetailEndpointQueryResponse,
+  TQueryData = StandingsGetDetailEndpointQueryResponse,
   TQueryKey extends QueryKey = StandingsGetDetailEndpointQueryKey,
 >(
   date: StandingsGetDetailEndpointPathParams['date'],
   filename: StandingsGetDetailEndpointPathParams['filename'],
   options: {
-    query?: Partial<QueryObserverOptions<ResponseConfig<StandingsGetDetailEndpointQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>> & {
+    query?: Partial<QueryObserverOptions<StandingsGetDetailEndpointQueryResponse, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>> & {
       client?: QueryClient
     }
     client?: Partial<RequestConfig> & { client?: typeof client }

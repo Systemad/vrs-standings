@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from '@tanstack/react-query'
 import type { StandingsGetStandingsEndpointQueryResponse, StandingsGetStandingsEndpointPathParams } from '../../types/StandingsGetStandingsEndpoint.ts'
 import { queryOptions, useQuery } from '@tanstack/react-query'
@@ -31,7 +31,7 @@ export async function standingsGetStandingsEndpoint(
     url: `/api/standings/${region}/${date}`,
     ...requestConfig,
   })
-  return res
+  return res.data
 }
 
 export function standingsGetStandingsEndpointQueryOptions(
@@ -40,12 +40,7 @@ export function standingsGetStandingsEndpointQueryOptions(
   config: Partial<RequestConfig> & { client?: typeof client } = {},
 ) {
   const queryKey = standingsGetStandingsEndpointQueryKey(region, date)
-  return queryOptions<
-    ResponseConfig<StandingsGetStandingsEndpointQueryResponse>,
-    ResponseErrorConfig<Error>,
-    ResponseConfig<StandingsGetStandingsEndpointQueryResponse>,
-    typeof queryKey
-  >({
+  return queryOptions<StandingsGetStandingsEndpointQueryResponse, ResponseErrorConfig<Error>, StandingsGetStandingsEndpointQueryResponse, typeof queryKey>({
     enabled: !!(region && date),
     queryKey,
     queryFn: async ({ signal }) => {
@@ -59,16 +54,16 @@ export function standingsGetStandingsEndpointQueryOptions(
  * {@link /api/standings/:region/:date}
  */
 export function useStandingsGetStandingsEndpoint<
-  TData = ResponseConfig<StandingsGetStandingsEndpointQueryResponse>,
-  TQueryData = ResponseConfig<StandingsGetStandingsEndpointQueryResponse>,
+  TData = StandingsGetStandingsEndpointQueryResponse,
+  TQueryData = StandingsGetStandingsEndpointQueryResponse,
   TQueryKey extends QueryKey = StandingsGetStandingsEndpointQueryKey,
 >(
   region: StandingsGetStandingsEndpointPathParams['region'],
   date: StandingsGetStandingsEndpointPathParams['date'],
   options: {
-    query?: Partial<
-      QueryObserverOptions<ResponseConfig<StandingsGetStandingsEndpointQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>
-    > & { client?: QueryClient }
+    query?: Partial<QueryObserverOptions<StandingsGetStandingsEndpointQueryResponse, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>> & {
+      client?: QueryClient
+    }
     client?: Partial<RequestConfig> & { client?: typeof client }
   } = {},
 ) {

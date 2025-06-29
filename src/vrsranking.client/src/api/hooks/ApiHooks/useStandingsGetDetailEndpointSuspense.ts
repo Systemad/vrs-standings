@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { QueryKey, QueryClient, UseSuspenseQueryOptions, UseSuspenseQueryResult } from '@tanstack/react-query'
 import type { StandingsGetDetailEndpointQueryResponse, StandingsGetDetailEndpointPathParams } from '../../types/StandingsGetDetailEndpoint.ts'
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
@@ -31,7 +31,7 @@ export async function standingsGetDetailEndpointSuspense(
     url: `/api/markdown/${date}/${filename}`,
     ...requestConfig,
   })
-  return res
+  return res.data
 }
 
 export function standingsGetDetailEndpointSuspenseQueryOptions(
@@ -40,12 +40,7 @@ export function standingsGetDetailEndpointSuspenseQueryOptions(
   config: Partial<RequestConfig> & { client?: typeof client } = {},
 ) {
   const queryKey = standingsGetDetailEndpointSuspenseQueryKey(date, filename)
-  return queryOptions<
-    ResponseConfig<StandingsGetDetailEndpointQueryResponse>,
-    ResponseErrorConfig<Error>,
-    ResponseConfig<StandingsGetDetailEndpointQueryResponse>,
-    typeof queryKey
-  >({
+  return queryOptions<StandingsGetDetailEndpointQueryResponse, ResponseErrorConfig<Error>, StandingsGetDetailEndpointQueryResponse, typeof queryKey>({
     enabled: !!(date && filename),
     queryKey,
     queryFn: async ({ signal }) => {
@@ -59,15 +54,13 @@ export function standingsGetDetailEndpointSuspenseQueryOptions(
  * {@link /api/markdown/:date/:filename}
  */
 export function useStandingsGetDetailEndpointSuspense<
-  TData = ResponseConfig<StandingsGetDetailEndpointQueryResponse>,
+  TData = StandingsGetDetailEndpointQueryResponse,
   TQueryKey extends QueryKey = StandingsGetDetailEndpointSuspenseQueryKey,
 >(
   date: StandingsGetDetailEndpointPathParams['date'],
   filename: StandingsGetDetailEndpointPathParams['filename'],
   options: {
-    query?: Partial<UseSuspenseQueryOptions<ResponseConfig<StandingsGetDetailEndpointQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
-      client?: QueryClient
-    }
+    query?: Partial<UseSuspenseQueryOptions<StandingsGetDetailEndpointQueryResponse, ResponseErrorConfig<Error>, TData, TQueryKey>> & { client?: QueryClient }
     client?: Partial<RequestConfig> & { client?: typeof client }
   } = {},
 ) {

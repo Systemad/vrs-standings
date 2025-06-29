@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { InfiniteData, QueryKey, QueryClient, InfiniteQueryObserverOptions, UseInfiniteQueryResult } from '@tanstack/react-query'
 import type { WeatherForecastGetQueryResponse } from '../../types/WeatherForecastGet.ts'
 import { infiniteQueryOptions, useInfiniteQuery } from '@tanstack/react-query'
@@ -20,17 +20,12 @@ export async function weatherForecastGetInfinite(config: Partial<RequestConfig> 
   const { client: request = client, ...requestConfig } = config
 
   const res = await request<WeatherForecastGetQueryResponse, ResponseErrorConfig<Error>, unknown>({ method: 'GET', url: `/WeatherForecast`, ...requestConfig })
-  return res
+  return res.data
 }
 
 export function weatherForecastGetInfiniteQueryOptions(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
   const queryKey = weatherForecastGetInfiniteQueryKey()
-  return infiniteQueryOptions<
-    ResponseConfig<WeatherForecastGetQueryResponse>,
-    ResponseErrorConfig<Error>,
-    ResponseConfig<WeatherForecastGetQueryResponse>,
-    typeof queryKey
-  >({
+  return infiniteQueryOptions<WeatherForecastGetQueryResponse, ResponseErrorConfig<Error>, WeatherForecastGetQueryResponse, typeof queryKey>({
     queryKey,
     queryFn: async ({ signal }) => {
       config.signal = signal
@@ -46,14 +41,12 @@ export function weatherForecastGetInfiniteQueryOptions(config: Partial<RequestCo
  * {@link /WeatherForecast}
  */
 export function useWeatherForecastGetInfinite<
-  TData = InfiniteData<ResponseConfig<WeatherForecastGetQueryResponse>>,
-  TQueryData = ResponseConfig<WeatherForecastGetQueryResponse>,
+  TData = InfiniteData<WeatherForecastGetQueryResponse>,
+  TQueryData = WeatherForecastGetQueryResponse,
   TQueryKey extends QueryKey = WeatherForecastGetInfiniteQueryKey,
 >(
   options: {
-    query?: Partial<InfiniteQueryObserverOptions<ResponseConfig<WeatherForecastGetQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
-      client?: QueryClient
-    }
+    query?: Partial<InfiniteQueryObserverOptions<WeatherForecastGetQueryResponse, ResponseErrorConfig<Error>, TData, TQueryKey>> & { client?: QueryClient }
     client?: Partial<RequestConfig> & { client?: typeof client }
   } = {},
 ) {

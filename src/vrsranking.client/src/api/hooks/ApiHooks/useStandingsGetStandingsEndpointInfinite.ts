@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { InfiniteData, QueryKey, QueryClient, InfiniteQueryObserverOptions, UseInfiniteQueryResult } from '@tanstack/react-query'
 import type { StandingsGetStandingsEndpointQueryResponse, StandingsGetStandingsEndpointPathParams } from '../../types/StandingsGetStandingsEndpoint.ts'
 import { infiniteQueryOptions, useInfiniteQuery } from '@tanstack/react-query'
@@ -31,7 +31,7 @@ export async function standingsGetStandingsEndpointInfinite(
     url: `/api/standings/${region}/${date}`,
     ...requestConfig,
   })
-  return res
+  return res.data
 }
 
 export function standingsGetStandingsEndpointInfiniteQueryOptions(
@@ -41,9 +41,9 @@ export function standingsGetStandingsEndpointInfiniteQueryOptions(
 ) {
   const queryKey = standingsGetStandingsEndpointInfiniteQueryKey(region, date)
   return infiniteQueryOptions<
-    ResponseConfig<StandingsGetStandingsEndpointQueryResponse>,
+    StandingsGetStandingsEndpointQueryResponse,
     ResponseErrorConfig<Error>,
-    ResponseConfig<StandingsGetStandingsEndpointQueryResponse>,
+    StandingsGetStandingsEndpointQueryResponse,
     typeof queryKey
   >({
     enabled: !!(region && date),
@@ -62,14 +62,14 @@ export function standingsGetStandingsEndpointInfiniteQueryOptions(
  * {@link /api/standings/:region/:date}
  */
 export function useStandingsGetStandingsEndpointInfinite<
-  TData = InfiniteData<ResponseConfig<StandingsGetStandingsEndpointQueryResponse>>,
-  TQueryData = ResponseConfig<StandingsGetStandingsEndpointQueryResponse>,
+  TData = InfiniteData<StandingsGetStandingsEndpointQueryResponse>,
+  TQueryData = StandingsGetStandingsEndpointQueryResponse,
   TQueryKey extends QueryKey = StandingsGetStandingsEndpointInfiniteQueryKey,
 >(
   region: StandingsGetStandingsEndpointPathParams['region'],
   date: StandingsGetStandingsEndpointPathParams['date'],
   options: {
-    query?: Partial<InfiniteQueryObserverOptions<ResponseConfig<StandingsGetStandingsEndpointQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
+    query?: Partial<InfiniteQueryObserverOptions<StandingsGetStandingsEndpointQueryResponse, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
       client?: QueryClient
     }
     client?: Partial<RequestConfig> & { client?: typeof client }

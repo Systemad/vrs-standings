@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { QueryKey, QueryClient, UseSuspenseQueryOptions, UseSuspenseQueryResult } from '@tanstack/react-query'
 import type { StandingsGetRegionsEndpointQueryResponse } from '../../types/StandingsGetRegionsEndpoint.ts'
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
@@ -24,17 +24,12 @@ export async function standingsGetRegionsEndpointSuspense(config: Partial<Reques
     url: `/api/standings/regions`,
     ...requestConfig,
   })
-  return res
+  return res.data
 }
 
 export function standingsGetRegionsEndpointSuspenseQueryOptions(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
   const queryKey = standingsGetRegionsEndpointSuspenseQueryKey()
-  return queryOptions<
-    ResponseConfig<StandingsGetRegionsEndpointQueryResponse>,
-    ResponseErrorConfig<Error>,
-    ResponseConfig<StandingsGetRegionsEndpointQueryResponse>,
-    typeof queryKey
-  >({
+  return queryOptions<StandingsGetRegionsEndpointQueryResponse, ResponseErrorConfig<Error>, StandingsGetRegionsEndpointQueryResponse, typeof queryKey>({
     queryKey,
     queryFn: async ({ signal }) => {
       config.signal = signal
@@ -47,13 +42,11 @@ export function standingsGetRegionsEndpointSuspenseQueryOptions(config: Partial<
  * {@link /api/standings/regions}
  */
 export function useStandingsGetRegionsEndpointSuspense<
-  TData = ResponseConfig<StandingsGetRegionsEndpointQueryResponse>,
+  TData = StandingsGetRegionsEndpointQueryResponse,
   TQueryKey extends QueryKey = StandingsGetRegionsEndpointSuspenseQueryKey,
 >(
   options: {
-    query?: Partial<UseSuspenseQueryOptions<ResponseConfig<StandingsGetRegionsEndpointQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryKey>> & {
-      client?: QueryClient
-    }
+    query?: Partial<UseSuspenseQueryOptions<StandingsGetRegionsEndpointQueryResponse, ResponseErrorConfig<Error>, TData, TQueryKey>> & { client?: QueryClient }
     client?: Partial<RequestConfig> & { client?: typeof client }
   } = {},
 ) {

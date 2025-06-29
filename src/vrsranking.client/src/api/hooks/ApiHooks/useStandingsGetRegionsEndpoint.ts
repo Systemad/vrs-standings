@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from '@tanstack/react-query'
 import type { StandingsGetRegionsEndpointQueryResponse } from '../../types/StandingsGetRegionsEndpoint.ts'
 import { queryOptions, useQuery } from '@tanstack/react-query'
@@ -24,17 +24,12 @@ export async function standingsGetRegionsEndpoint(config: Partial<RequestConfig>
     url: `/api/standings/regions`,
     ...requestConfig,
   })
-  return res
+  return res.data
 }
 
 export function standingsGetRegionsEndpointQueryOptions(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
   const queryKey = standingsGetRegionsEndpointQueryKey()
-  return queryOptions<
-    ResponseConfig<StandingsGetRegionsEndpointQueryResponse>,
-    ResponseErrorConfig<Error>,
-    ResponseConfig<StandingsGetRegionsEndpointQueryResponse>,
-    typeof queryKey
-  >({
+  return queryOptions<StandingsGetRegionsEndpointQueryResponse, ResponseErrorConfig<Error>, StandingsGetRegionsEndpointQueryResponse, typeof queryKey>({
     queryKey,
     queryFn: async ({ signal }) => {
       config.signal = signal
@@ -47,14 +42,14 @@ export function standingsGetRegionsEndpointQueryOptions(config: Partial<RequestC
  * {@link /api/standings/regions}
  */
 export function useStandingsGetRegionsEndpoint<
-  TData = ResponseConfig<StandingsGetRegionsEndpointQueryResponse>,
-  TQueryData = ResponseConfig<StandingsGetRegionsEndpointQueryResponse>,
+  TData = StandingsGetRegionsEndpointQueryResponse,
+  TQueryData = StandingsGetRegionsEndpointQueryResponse,
   TQueryKey extends QueryKey = StandingsGetRegionsEndpointQueryKey,
 >(
   options: {
-    query?: Partial<
-      QueryObserverOptions<ResponseConfig<StandingsGetRegionsEndpointQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>
-    > & { client?: QueryClient }
+    query?: Partial<QueryObserverOptions<StandingsGetRegionsEndpointQueryResponse, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>> & {
+      client?: QueryClient
+    }
     client?: Partial<RequestConfig> & { client?: typeof client }
   } = {},
 ) {

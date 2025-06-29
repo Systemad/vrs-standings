@@ -7,7 +7,7 @@
     <UserSecretsId>a13dabcb-cf87-473f-8d6d-339707dcda0a</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <SpaRoot>..\vrsranking.client</SpaRoot>
-    <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
+    <SpaProxyLaunchCommand>pnpm run dev</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:52032</SpaProxyServerUrl>
   </PropertyGroup>
 

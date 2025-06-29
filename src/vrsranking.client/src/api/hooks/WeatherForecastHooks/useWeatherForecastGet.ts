@@ -4,7 +4,7 @@
  */
 
 import client from '@kubb/plugin-client/clients/axios'
-import type { RequestConfig, ResponseErrorConfig, ResponseConfig } from '@kubb/plugin-client/clients/axios'
+import type { RequestConfig, ResponseErrorConfig } from '@kubb/plugin-client/clients/axios'
 import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from '@tanstack/react-query'
 import type { WeatherForecastGetQueryResponse } from '../../types/WeatherForecastGet.ts'
 import { queryOptions, useQuery } from '@tanstack/react-query'
@@ -20,17 +20,12 @@ export async function weatherForecastGet(config: Partial<RequestConfig> & { clie
   const { client: request = client, ...requestConfig } = config
 
   const res = await request<WeatherForecastGetQueryResponse, ResponseErrorConfig<Error>, unknown>({ method: 'GET', url: `/WeatherForecast`, ...requestConfig })
-  return res
+  return res.data
 }
 
 export function weatherForecastGetQueryOptions(config: Partial<RequestConfig> & { client?: typeof client } = {}) {
   const queryKey = weatherForecastGetQueryKey()
-  return queryOptions<
-    ResponseConfig<WeatherForecastGetQueryResponse>,
-    ResponseErrorConfig<Error>,
-    ResponseConfig<WeatherForecastGetQueryResponse>,
-    typeof queryKey
-  >({
+  return queryOptions<WeatherForecastGetQueryResponse, ResponseErrorConfig<Error>, WeatherForecastGetQueryResponse, typeof queryKey>({
     queryKey,
     queryFn: async ({ signal }) => {
       config.signal = signal
@@ -43,14 +38,12 @@ export function weatherForecastGetQueryOptions(config: Partial<RequestConfig> & 
  * {@link /WeatherForecast}
  */
 export function useWeatherForecastGet<
-  TData = ResponseConfig<WeatherForecastGetQueryResponse>,
-  TQueryData = ResponseConfig<WeatherForecastGetQueryResponse>,
+  TData = WeatherForecastGetQueryResponse,
+  TQueryData = WeatherForecastGetQueryResponse,
   TQueryKey extends QueryKey = WeatherForecastGetQueryKey,
 >(
   options: {
-    query?: Partial<QueryObserverOptions<ResponseConfig<WeatherForecastGetQueryResponse>, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>> & {
-      client?: QueryClient
-    }
+    query?: Partial<QueryObserverOptions<WeatherForecastGetQueryResponse, ResponseErrorConfig<Error>, TData, TQueryData, TQueryKey>> & { client?: QueryClient }
     client?: Partial<RequestConfig> & { client?: typeof client }
   } = {},
 ) {
