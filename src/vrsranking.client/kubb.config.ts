@@ -29,11 +29,13 @@ export default defineConfig(() => {
                 mutation: {
                     methods: ["post", "put", "delete"],
                 },
+                /*
                 infinite: {
                     queryParam: "pageNumber",
                     initialPageParam: 1,
                     cursorParam: "pageNumber",
                 },
+                */
                 query: {
                     methods: ["get"],
                     importPath: "@tanstack/react-query",

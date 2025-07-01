@@ -14,10 +14,11 @@ RUN apt-get update
 RUN apt-get install curl
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
 RUN apt-get -y install nodejs
-
+RUN corepack enable
 
 FROM with-node AS build
 ARG BUILD_CONFIGURATION=Release
+#RUN apt-get update && apt-get install -y curl git && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 COPY ["vrsranking.Server/vrsranking.Server.csproj", "vrsranking.Server/"]
 COPY ["vrsranking.client/vrsranking.client.esproj", "vrsranking.client/"]
@@ -35,4 +36,9 @@ RUN dotnet publish "./vrsranking.Server.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY --from=build /repos /app/repos
+
+COPY setup.sh /app/setup.sh
+RUN chmod +x /app/setup.sh
+RUN /app/setup.sh
 ENTRYPOINT ["dotnet", "vrsranking.Server.dll"]

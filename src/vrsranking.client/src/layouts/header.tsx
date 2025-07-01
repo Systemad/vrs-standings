@@ -18,7 +18,6 @@ import {
     forwardRef,
     HStack,
     IconButton,
-    Menu,
     mergeRefs,
     Spacer,
     useBreakpoint,
@@ -28,27 +27,15 @@ import {
     useMotionValueEvent,
     useScroll,
     VStack,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
     Link as YamadaLink,
 } from "@yamada-ui/react";
 import { memo, useEffect, useRef, useState } from "react";
 import GithubIcon from "~/icons/GitHubIcon";
 
-/*
-                                <Image
-                                        src="/logo-black.png"
-                                        alt="VRS"
-                                        h={{ base: "8", sm: "7" }}
-                                        w="auto"
-                                        _dark={{ display: "none" }}
-                                    />
-                                    <Image
-                                        src="/logo-white.png"
-                                        alt="VRS"
-                                        h={{ base: "8", sm: "7" }}
-                                        w="auto"
-                                        _light={{ display: "none" }}
-                                    />
-*/
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface HeaderProps extends CenterProps {}
 
@@ -93,20 +80,34 @@ export const Header = memo(
                             w="full"
                         >
                             <HStack gap={{ base: "md", sm: "sm" }}>
-                                <Center
-                                    as={YamadaLink}
-                                    href="https://github.com/ValveSoftware/counter-strike_regional_standings"
-                                    external
-                                    aria-label="Yamada UI"
-                                    rounded="md"
-                                    transitionDuration="slower"
-                                    transitionProperty="opacity"
-                                    _focus={{ outline: "none" }}
-                                    _focusVisible={{ boxShadow: "outline" }}
-                                    _hover={{ opacity: 0.7 }}
-                                >
-                                    valve regional standings
-                                </Center>
+                                <Menu>
+                                    <MenuButton
+                                        as={IconButton}
+                                        rounded="xl"
+                                        variant="outline"
+                                        icon={<MenuIcon fontSize="2xl" />}
+                                    />
+
+                                    <MenuList>
+                                        <MenuItem icon={<GithubIcon />}>
+                                            <YamadaLink
+                                                href="https://github.com/ValveSoftware/counter-strike_regional_standings"
+                                                external
+                                                aria-label="Valve Regional Standing GitHub"
+                                                rounded="md"
+                                                transitionDuration="slower"
+                                                transitionProperty="opacity"
+                                                _focus={{ outline: "none" }}
+                                                _focusVisible={{
+                                                    boxShadow: "outline",
+                                                }}
+                                                _hover={{ opacity: 0.7 }}
+                                            >
+                                                Valve Regions Ranking
+                                            </YamadaLink>
+                                        </MenuItem>
+                                    </MenuList>
+                                </Menu>
 
                                 <Spacer />
 
@@ -136,7 +137,7 @@ const ButtonGroup: FC<ButtonGroupProps> = memo(
             <HStack gap="sm">
                 <IconButton
                     as={YamadaLink}
-                    href="{CONSTANT.SNS.DISCORD}"
+                    href="https://github.com/Systemad/vrs-standings"
                     variant="ghost"
                     aria-label="GitHub repository"
                     color="muted"

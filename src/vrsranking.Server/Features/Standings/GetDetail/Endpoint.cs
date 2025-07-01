@@ -24,7 +24,6 @@ public class Endpoint : Endpoint<GetDetailRequest, GetDetailResponse>
 
     public override async Task HandleAsync(GetDetailRequest req, CancellationToken ct)
     {
-        Console.WriteLine("FETCH");
         var markdown = Path.Combine(Paths.Rankings.Y2025Details, req.Date, req.Filename);
 
         if (!File.Exists(markdown))

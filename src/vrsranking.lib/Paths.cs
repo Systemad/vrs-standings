@@ -5,6 +5,9 @@ public static class Paths
     
     public static string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
     public static string WorkRoot = Path.Combine(documentsPath, "webdev", "workdir");
+
+    // FOR deployment
+    //public static string WorkRoot = "/workdir";
     
     public static string ExportedRoot = Path.Combine(WorkRoot, "exported");
     public static string ReposRoot = Path.Combine(WorkRoot, "repos");
