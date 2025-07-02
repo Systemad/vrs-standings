@@ -1,0 +1,42 @@
+﻿name: "vrsranking"
+services:
+  dashboard:
+    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest"
+    ports:
+      - "8000:18888"
+      - "8001:18889"
+    networks:
+      - "aspire"
+  webapi:
+    image: "${WEBAPI_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "8004"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "webapi"
+    ports:
+      - "8005:8004"
+      - "8007:8006"
+    networks:
+      - "aspire"
+  webui:
+    image: "${WEBUI_IMAGE}"
+    environment:
+      NODE_ENV: "production"
+      PORT: "80"
+      BACKEND_URL: "webapi:8004"
+      SPAN: "webui"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "webui"
+    ports:
+      - "8008:80"
+    networks:
+      - "aspire"
+networks:
+  aspire:
+    driver: "bridge"

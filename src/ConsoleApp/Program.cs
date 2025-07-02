@@ -5,7 +5,7 @@ using Markdig.Extensions.AutoLinks;
 using Markdig.Extensions.Tables;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using vrsranking.lib;
+using lib;
 
 
 string path = @"C:\Users\yeahg\source\repos\vrsranking\src\ConsoleApp\standings_global_2025_06_02.md";
